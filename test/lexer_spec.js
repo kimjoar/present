@@ -20,23 +20,21 @@ describe("Lexer", function() {
       lexer.tag().should.have.property('type', 'tag');
     });
 
-    it("returns tag token if tag contains pseudo-class", function() {
-      var lexer = new Lexer("a:hover");
-      lexer.tag().should.have.property('type', 'tag');
-      lexer.deferred().should.have.property('type', ':');
-      lexer.deferred().should.have.property('type', 'pseudo');
-    });
-
     it("returns correct value if proper tag selector", function() {
       var lexer = new Lexer("a");
       lexer.tag().should.have.property('val', 'a');
     });
+  });
+
+  describe("pseudo", function() {
+    it("returns pseudo token if proper pseudo-class", function() {
+      var lexer = new Lexer(":hover");
+      lexer.pseudo().should.have.property('type', 'pseudo');
+    });
 
     it("returns correct value if tag with pseudo-class", function() {
-      var lexer = new Lexer("a:hover");
-      lexer.tag().should.have.property('val', 'a');
-      lexer.deferred();
-      lexer.deferred().should.have.property('val', 'hover');
+      var lexer = new Lexer(":hover");
+      lexer.pseudo().should.have.property('val', 'hover');
     });
   });
 
@@ -61,6 +59,18 @@ describe("Lexer", function() {
     it("returns correct value if proper class selector", function() {
       var lexer = new Lexer(".test");
       lexer.className().should.have.property('val', 'test');
+    });
+  });
+
+  describe("braces", function() {
+    it("returns start braces token if a start braces is present", function() {
+      var lexer = new Lexer("{");
+      lexer.braces().should.have.property('type', 'startBraces');
+    });
+
+    it("returns end braces token if an end braces is present", function() {
+      var lexer = new Lexer("}");
+      lexer.braces().should.have.property('type', 'endBraces');
     });
   });
 });
