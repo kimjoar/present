@@ -5,7 +5,7 @@ Lexer = module.exports = (str, options) ->
   this.deferredTokens = []
   this.inBraces = false
 
-Lexer.prototype = {
+Lexer.prototype =
   #
   # Construct a token with the given `type` and `val`.
   #
@@ -106,17 +106,17 @@ Lexer.prototype = {
     this.next()
 
   next: ->
-    this.deferred() or
-      this.id() or
+    this.deferred()     or
+      this.id()         or
       this.whitespace() or
-      this.newline() or
-      this.braces() or
-      this.tag() or
-      this.className() or
-      this.property() or
-      this.colon() or
-      this.value() or
-      this.semicolon() or
+      this.newline()    or
+      this.braces()     or
+      this.tag()        or
+      this.className()  or
+      this.property()   or
+      this.colon()      or
+      this.value()      or
+      this.semicolon()  or
       this.eos()
 
   defer: (tok) ->
@@ -124,4 +124,3 @@ Lexer.prototype = {
 
   deferred: ->
     this.deferredTokens.length && this.deferredTokens.shift()
-}
