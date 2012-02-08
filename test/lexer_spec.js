@@ -88,12 +88,13 @@ describe("Lexer", function() {
 
   describe("property", function() {
     it("returns a property token if proper property", function() {
-      var lexer = new Lexer("background-color");
+      var lexer = new Lexer("background-color:");
       lexer.property().should.have.property('type', 'property');
+      lexer.deferred().should.have.property('type', ':');
     });
 
     it("returns correct value if proper property", function() {
-      var lexer = new Lexer("background-color");
+      var lexer = new Lexer("background-color:");
       lexer.property().should.have.property('val', 'background-color');
     });
   });
@@ -177,6 +178,13 @@ describe("Lexer", function() {
     });
   });
 
+  describe("newline", function() {
+    it("returns newline token if single newline", function() {
+      var lexer = new Lexer("\n");
+      lexer.newline().should.have.property('type', 'newline');
+    });
+  });
+
   describe("advance", function() {
     it('should find all tokens in "#test {}"', function() {
       var lexer = new Lexer("#test {}");
@@ -184,6 +192,7 @@ describe("Lexer", function() {
       lexer.advance().should.have.property('type', 'whitespace');
       lexer.advance().should.have.property('type', 'startBraces');
       lexer.advance().should.have.property('type', 'endBraces');
+      lexer.advance().should.have.property('type', 'eos');
     });
 
     it('should find all tokens in "#test p .good {}"', function() {
@@ -196,6 +205,7 @@ describe("Lexer", function() {
       lexer.advance().should.have.property('type', 'whitespace');
       lexer.advance().should.have.property('type', 'startBraces');
       lexer.advance().should.have.property('type', 'endBraces');
+      lexer.advance().should.have.property('type', 'eos');
     });
 
     it('should find all tokens in "#test {color: #fff;}"', function() {
@@ -209,6 +219,26 @@ describe("Lexer", function() {
       lexer.advance().should.have.property('type', 'value');
       lexer.advance().should.have.property('type', ';');
       lexer.advance().should.have.property('type', 'endBraces');
+      lexer.advance().should.have.property('type', 'eos');
+    });
+
+    it('should find all tokens in "#test {color: #fff;\nfont: 12px;}"', function() {
+      var lexer = new Lexer("#test {color: #fff;\nfont: 12px}");
+      lexer.advance().should.have.property('type', 'id');
+      lexer.advance().should.have.property('type', 'whitespace');
+      lexer.advance().should.have.property('type', 'startBraces');
+      lexer.advance().should.have.property('type', 'property');
+      lexer.advance().should.have.property('type', ':');
+      lexer.advance().should.have.property('type', 'whitespace');
+      lexer.advance().should.have.property('type', 'value');
+      lexer.advance().should.have.property('type', ';');
+      lexer.advance().should.have.property('type', 'newline');
+      lexer.advance().should.have.property('type', 'property');
+      lexer.advance().should.have.property('type', ':');
+      lexer.advance().should.have.property('type', 'whitespace');
+      lexer.advance().should.have.property('type', 'value');
+      lexer.advance().should.have.property('type', 'endBraces');
+      lexer.advance().should.have.property('type', 'eos');
     });
   });
 });
