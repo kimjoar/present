@@ -9,7 +9,7 @@ Lexer.prototype =
   #
   # Construct a token with the given `type` and `val`.
   #
-  tok: (type, val) ->
+  token: (type, val) ->
     {
       type: type
       , line: this.lineno
@@ -29,14 +29,14 @@ Lexer.prototype =
     if captures = regexp.exec(this.input)
       # When we find a match, we consume it and create a token
       this.consume(captures[0].length)
-      this.tok(type, captures[1])
+      this.token(type, captures[1])
 
   #
   # end-of-source
   #
   eos: ->
     return if this.input.length
-    this.tok('eos')
+    this.token('eos')
 
   #
   # tag selector
@@ -58,11 +58,11 @@ Lexer.prototype =
     if captures = /^{/.exec(this.input)
       this.inBraces = true
       this.consume(captures[0].length)
-      this.tok('startBraces', captures[1])
+      this.token('startBraces', captures[1])
     else if captures = /^}/.exec(this.input)
       this.inBraces = false
       this.consume(captures[0].length)
-      this.tok('endBraces', captures[1])
+      this.token('endBraces', captures[1])
 
   #
   # id selector
@@ -84,8 +84,8 @@ Lexer.prototype =
   property: ->
     if captures = /^([\w-]+):/.exec(this.input)
       this.consume(captures[0].length)
-      this.defer(this.tok(':'))
-      this.tok('property', captures[1])
+      this.defer(this.token(':'))
+      this.token('property', captures[1])
 
   colon: ->
     this.scan(/^:/, ":")
