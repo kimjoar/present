@@ -101,6 +101,15 @@ Lexer.prototype =
       this.defer(this.token(':'))
       this.token('property', captures[1])
 
+  equal: ->
+    this.scan(/^=/, "=")
+
+  includes: ->
+    this.scan(/^~=/, "~=")
+
+  dashmatch: ->
+    this.scan(/^\|=/, "|=")
+
   colon: ->
     this.scan(/^:/, ":")
 
@@ -154,6 +163,9 @@ Lexer.prototype =
       this.newline()    or
       this.braces()     or
       this.bracket()    or
+      this.equal()      or
+      this.includes()   or
+      this.dashmatch()  or
       this.tag()        or
       this.className()  or
       this.property()   or

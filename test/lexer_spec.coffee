@@ -107,6 +107,25 @@ describe "Lexer", ->
         type:  "]"
         func:  "bracket"
 
+  describe "equal", ->
+    it "returns equal token if =", ->
+      ensureToken
+        input: "="
+        type:  "="
+        func:  "equal"
+
+    it "returns includes token if =", ->
+      ensureToken
+        input: "~="
+        type:  "~="
+        func:  "includes"
+
+    it "returns dashmatch token if |=", ->
+      ensureToken
+        input: "|="
+        type:  "|="
+        func:  "dashmatch"
+
   describe "colon", ->
     it "returns colon token if single colon", ->
       ensureToken
@@ -255,6 +274,15 @@ describe "Lexer", ->
         ["tag"
          "["
          "identifier",
+         "]"]
+
+    it 'should handle match in brackets', ->
+      advanceTokens 'p[test="what"] {color: #fff; }',
+        ["tag"
+         "["
+         "identifier",
+         "=",
+         "string",
          "]"]
 
     it 'should find all tokens in "#test p .good {color: #fff !important;\\nfont: 12px; -webkit-box-shadow: 10px 10px 5px #888; }"', ->
