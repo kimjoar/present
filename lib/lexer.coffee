@@ -12,8 +12,8 @@ Lexer.prototype =
   token: (type, val) ->
     {
       type: type
-      , line: this.lineno
-      , val: val
+      line: this.lineno
+      val: val
     }
 
   #
