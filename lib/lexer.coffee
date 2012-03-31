@@ -115,8 +115,7 @@ Lexer.prototype =
     this.scan(/^([ ]+)/, 'whitespace')
 
   newline: ->
-    newline = this.scan(/^(\n)/, 'newline')
-    if newline
+    if newline = this.scan(/^(\n)/, 'newline')
       this.lineno += 1
       newline
 
