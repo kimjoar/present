@@ -1,11 +1,23 @@
 Lexer = require('../lib/lexer')
 should = require('should')
 
+ensure = (opts) ->
+  opts.func = opts.type unless opts.func
+  lexer = new Lexer(opts.input)
+  out = lexer[opts.func].apply lexer
+  out.should.have.property('type', opts.type)
+  out.should.have.property('val', opts.val) if opts.val
+
+advances = (string, tokens) ->
+  lexer = new Lexer(string)
+  lexer.advance().should.have.property('type', type) for type in tokens
+
 describe "Lexer", ->
   describe "eos", ->
     it "returns eos token if at end-of-source", ->
-      lexer = new Lexer("")
-      lexer.eos().should.have.property('type', 'eos')
+      ensure
+        input: "",
+        type:  "eos"
 
     it "returns undefined if not at end-of-source", ->
       lexer = new Lexer("#test {}")
@@ -13,58 +25,57 @@ describe "Lexer", ->
 
   describe "tag", ->
     it "returns tag token if proper tag selector", ->
-      lexer = new Lexer("h1")
-      lexer.tag().should.have.property('type', 'tag')
-
-    it "returns correct value if proper tag selector", ->
-      lexer = new Lexer("h1")
-      lexer.tag().should.have.property('val', 'h1')
+      ensure
+        input: "h1",
+        type:  "tag",
+        val:   "h1"
 
   describe "pseudo", ->
     it "returns pseudo token if proper pseudo-class", ->
-      lexer = new Lexer(":hover")
-      lexer.pseudo().should.have.property('type', 'pseudo')
+      ensure
+        input: ":hover",
+        type:  "pseudo",
+        val:   "hover"
 
     it "returns pseudo token if pseudo-class contains -", ->
-      lexer = new Lexer(":first-line")
-      pseudo = lexer.pseudo()
-      pseudo.should.have.property('type', 'pseudo')
-      pseudo.should.have.property('val', 'first-line')
-
-    it "returns correct value if tag with pseudo-class", ->
-      lexer = new Lexer(":hover")
-      lexer.pseudo().should.have.property('val', 'hover')
+      ensure
+        input: ":first-line",
+        type:  "pseudo",
+        val:   "first-line"
 
   describe "id", ->
     it "returns id token if proper id selector", ->
-      lexer = new Lexer("#test")
-      lexer.id().should.have.property('type', 'id')
-
-    it "returns correct value if proper id selector", ->
-      lexer = new Lexer("#test")
-      lexer.id().should.have.property('val', 'test')
+      ensure
+        input: "#test",
+        type:  "id",
+        val:   "test"
 
     it "does not include ' ' in id", ->
-      lexer = new Lexer("#test p")
-      lexer.id().should.have.property('val', 'test')
+      ensure
+        input: "#test p",
+        type:  "id",
+        val:   "test"
 
   describe "className", ->
     it "returns class token if proper class selector", ->
-      lexer = new Lexer(".test")
-      lexer.className().should.have.property('type', 'class')
-
-    it "returns correct value if proper class selector", ->
-      lexer = new Lexer(".test")
-      lexer.className().should.have.property('val', 'test')
+      ensure
+        input: ".test",
+        type:  "class",
+        func:  "className",
+        val:   "test"
 
   describe "braces", ->
     it "returns start braces token if a start braces is present", ->
-      lexer = new Lexer("{")
-      lexer.braces().should.have.property('type', 'startBraces')
+      ensure
+        input: "{",
+        type:  "startBraces",
+        func:  "braces",
 
     it "returns end braces token if an end braces is present", ->
-      lexer = new Lexer("}")
-      lexer.braces().should.have.property('type', 'endBraces')
+      ensure
+        input: "}",
+        type:  "endBraces",
+        func:  "braces",
 
   describe "property", ->
     it "returns a property token if proper property", ->
@@ -78,115 +89,127 @@ describe "Lexer", ->
       lexer.deferred().should.have.property('type', ':')
 
     it "returns correct value if proper property", ->
-      lexer = new Lexer("background-color:")
-      lexer.property().should.have.property('val', 'background-color')
+      ensure
+        input: "background-color:",
+        type:  "property",
+        val:   "background-color"
 
   describe "colon", ->
     it "returns colon token if single colon", ->
-      lexer = new Lexer(":")
-      lexer.colon().should.have.property('type', ':')
+      ensure
+        input: ":",
+        type:  ":",
+        func:  "colon"
 
   describe "comma", ->
     it "returns comma token if single comma", ->
-      lexer = new Lexer(",")
-      lexer.comma().should.have.property('type', ',')
+      ensure
+        input: ",",
+        type:  ",",
+        func:  "comma"
 
   describe "percent", ->
     it "returns percent token if single percent", ->
-      lexer = new Lexer("%")
-      lexer.percent().should.have.property('type', '%')
+      ensure
+        input: "%",
+        type:  "%",
+        func:  "percent"
 
   describe "identifier", ->
     it "handles single-word value as identifier", ->
-      lexer = new Lexer("Times")
-      identifier = lexer.identifier()
-      identifier.should.have.property('type', 'identifier')
-      identifier.should.have.property('val', 'Times')
+      ensure
+        input: "Times"
+        type:  "identifier",
+        val:   "Times"
 
   describe "string", ->
     it "handles space separated strings", ->
-      lexer = new Lexer('"New Century Schoolbook"')
-      string = lexer.string()
-      string.should.have.property('type', 'string')
-      string.should.have.property('val', '"New Century Schoolbook"')
+      ensure
+        input: '"New Century Schoolbook"'
+        type:  "string",
+        val:   '"New Century Schoolbook"'
 
     it "handles strings with _", ->
-      lexer = new Lexer("'_test'")
-      string = lexer.string()
-      string.should.have.property('type', 'string')
-      string.should.have.property('val', "'_test'")
+      ensure
+        input: "'_test'"
+        type:  "string",
+        val:   "'_test'"
 
   describe "number", ->
     it "handles 0-9 one or more times as a number", ->
-      lexer = new Lexer("123")
-      number = lexer.number()
-      number.should.have.property('type', 'number')
-      number.should.have.property('val', "123")
+      ensure
+        input: "123"
+        type:  "number",
+        val:   "123"
 
     it "handles number containing .", ->
-      lexer = new Lexer("12.3")
-      number = lexer.number()
-      number.should.have.property('type', 'number')
-      number.should.have.property('val', "12.3")
+      ensure
+        input: "12.3"
+        type:  "number",
+        val:   "12.3"
 
   describe "color", ->
     it "handles shortened hex colors", ->
-      lexer = new Lexer("#fff")
-      color = lexer.color()
-      color.should.have.property('type', 'color')
-      color.should.have.property('val', '#fff')
+      ensure
+        input: "#fff"
+        type:  "color",
+        val:   "#fff"
 
     it "handles regular hex colors", ->
-      lexer = new Lexer("#abc123")
-      color = lexer.color()
-      color.should.have.property('type', 'color')
-      color.should.have.property('val', '#abc123')
+      ensure
+        input: "#abc123"
+        type:  "color",
+        val:   "#abc123"
 
   describe "value", ->
     it "handles ()", ->
-      lexer = new Lexer("white url(candybar.gif)")
-      value = lexer.value()
-      value.should.have.property('type', 'value')
-      value.should.have.property('val', 'white url(candybar.gif)')
+      ensure
+        input: "white url(candybar.gif)"
+        type: "value"
+        val: "white url(candybar.gif)"
 
     it "handles %", ->
-      lexer = new Lexer("200%")
-      value = lexer.value()
-      value.should.have.property('type', 'value')
-      value.should.have.property('val', '200%')
+      ensure
+        input: "200%"
+        type: "value"
+        val: "200%"
 
     it "does not include ;", ->
-      lexer = new Lexer("200%;")
-      value = lexer.value()
-      value.should.have.property('type', 'value')
-      value.should.have.property('val', '200%')
+      ensure
+        input: "200%;"
+        type: "value"
+        val: "200%"
 
     it "does not include !", ->
-      lexer = new Lexer("200% !important")
-      value = lexer.value()
-      value.should.have.property('type', 'value')
-      value.should.have.property('val', '200% ')
+      ensure
+        input: "200% !important"
+        type: "value"
+        val: "200% "
 
     it "does not include }", ->
-      lexer = new Lexer("200%}")
-      value = lexer.value()
-      value.should.have.property('type', 'value')
-      value.should.have.property('val', '200%')
+      ensure
+        input: "200%}"
+        type: "value"
+        val: "200%"
 
   describe "semicolon", ->
     it "returns semicolon token if single semicolon", ->
-      lexer = new Lexer(";")
-      lexer.semicolon().should.have.property('type', ';')
+      ensure
+        input: ";"
+        type: ";"
+        func: "semicolon"
 
   describe "!important", ->
     it "returns important token if !important", ->
-      lexer = new Lexer("!important")
-      lexer.important().should.have.property('type', 'important')
+      ensure
+        input: "!important"
+        type: "important"
 
   describe "newline", ->
     it "returns newline token if single newline", ->
-      lexer = new Lexer("\n")
-      lexer.newline().should.have.property('type', 'newline')
+      ensure
+        input: "\n"
+        type: "newline"
 
     it "increases lineno when matches", ->
       lexer = new Lexer("\n")
@@ -202,55 +225,55 @@ describe "Lexer", ->
 
   describe "comment", ->
     it "handles comment on one line", ->
-      lexer = new Lexer('/* testing */')
-      comment = lexer.comment()
-      comment.should.have.property('type', 'comment')
-      comment.should.have.property('val', '/* testing */')
+      ensure
+        input: '/* testing */'
+        type: 'comment'
+        val: '/* testing */'
 
   describe "advance", ->
     it 'should find pseudo selector in "p:first-child {color: #fff; }"', ->
-      lexer = new Lexer("p:first-child {color: #fff; }")
-      lexer.advance().should.have.property('type', 'tag')
-      lexer.advance().should.have.property('type', 'pseudo')
-      lexer.advance().should.have.property('type', 'whitespace')
+      advances "p:first-child {color: #fff; }",
+        ["tag",
+         "pseudo",
+         "whitespace"]
 
     it 'should find all tokens in "#test p .good {color: #fff !important;\\nfont: 12px; -webkit-box-shadow: 10px 10px 5px #888; }"', ->
-      lexer = new Lexer("#test p .good {color: #fff !important;\nfont: 120%; -webkit-box-shadow: 10px 10px 5px #888;}")
-      lexer.advance().should.have.property('type', 'id')
-      lexer.advance().should.have.property('type', 'whitespace')
-      lexer.advance().should.have.property('type', 'tag')
-      lexer.advance().should.have.property('type', 'whitespace')
-      lexer.advance().should.have.property('type', 'class')
-      lexer.advance().should.have.property('type', 'whitespace')
-      lexer.advance().should.have.property('type', 'startBraces')
-      lexer.advance().should.have.property('type', 'property')
-      lexer.advance().should.have.property('type', ':')
-      lexer.advance().should.have.property('type', 'whitespace')
-      lexer.advance().should.have.property('type', 'color')
-      lexer.advance().should.have.property('type', 'whitespace')
-      lexer.advance().should.have.property('type', 'important')
-      lexer.advance().should.have.property('type', ';')
-      lexer.advance().should.have.property('type', 'newline')
-      lexer.advance().should.have.property('type', 'property')
-      lexer.advance().should.have.property('type', ':')
-      lexer.advance().should.have.property('type', 'whitespace')
-      lexer.advance().should.have.property('type', 'number')
-      lexer.advance().should.have.property('type', '%')
-      lexer.advance().should.have.property('type', ';')
-      lexer.advance().should.have.property('type', 'whitespace')
-      lexer.advance().should.have.property('type', 'property')
-      lexer.advance().should.have.property('type', ':')
-      lexer.advance().should.have.property('type', 'whitespace')
-      lexer.advance().should.have.property('type', 'number')
-      lexer.advance().should.have.property('type', 'identifier')
-      lexer.advance().should.have.property('type', 'whitespace')
-      lexer.advance().should.have.property('type', 'number')
-      lexer.advance().should.have.property('type', 'identifier')
-      lexer.advance().should.have.property('type', 'whitespace')
-      lexer.advance().should.have.property('type', 'number')
-      lexer.advance().should.have.property('type', 'identifier')
-      lexer.advance().should.have.property('type', 'whitespace')
-      lexer.advance().should.have.property('type', 'color')
-      lexer.advance().should.have.property('type', ';')
-      lexer.advance().should.have.property('type', 'endBraces')
-      lexer.advance().should.have.property('type', 'eos')
+      advances "#test p .good {color: #fff !important;\nfont: 120%; -webkit-box-shadow: 10px 10px 5px #888;}",
+        ['id',
+         'whitespace',
+         'tag',
+         'whitespace',
+         'class',
+         'whitespace',
+         'startBraces',
+         'property',
+         ':',
+         'whitespace',
+         'color',
+         'whitespace',
+         'important',
+         ';',
+         'newline',
+         'property',
+         ':',
+         'whitespace',
+         'number',
+         '%',
+         ';',
+         'whitespace',
+         'property',
+         ':',
+         'whitespace',
+         'number',
+         'identifier',
+         'whitespace',
+         'number',
+         'identifier',
+         'whitespace',
+         'number',
+         'identifier',
+         'whitespace',
+         'color',
+         ';',
+         'endBraces',
+         'eos']
