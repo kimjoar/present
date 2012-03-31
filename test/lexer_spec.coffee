@@ -123,6 +123,12 @@ describe "Lexer", ->
       number.should.have.property('type', 'number')
       number.should.have.property('val', "123")
 
+    it "handles number containing .", ->
+      lexer = new Lexer("12.3")
+      number = lexer.number()
+      number.should.have.property('type', 'number')
+      number.should.have.property('val', "12.3")
+
   describe "color", ->
     it "handles shortened hex colors", ->
       lexer = new Lexer("#fff")
