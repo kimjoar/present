@@ -120,6 +120,9 @@ Lexer.prototype =
   whitespace: ->
     this.scan(/^([ ]+)/, 'whitespace')
 
+  comment: ->
+    this.scan(/^(\/\*.+\*\/)/, 'comment')
+
   newline: ->
     if newline = this.scan(/^(\n)/, 'newline')
       this.lineno += 1
@@ -130,6 +133,7 @@ Lexer.prototype =
 
   next: ->
     this.deferred()     or
+      this.comment()    or
       this.id()         or
       this.whitespace() or
       this.newline()    or

@@ -200,6 +200,13 @@ describe "Lexer", ->
       lexer.newline()
       lexer.lineno.should.equal(1)
 
+  describe "comment", ->
+    it "handles comment on one line", ->
+      lexer = new Lexer('/* testing */')
+      comment = lexer.comment()
+      comment.should.have.property('type', 'comment')
+      comment.should.have.property('val', '/* testing */')
+
   describe "advance", ->
     it 'should find all tokens in "#test p .good {color: #fff !important;\\nfont: 12px; -webkit-box-shadow: 10px 10px 5px #888; }"', ->
       lexer = new Lexer("#test p .good {color: #fff !important;\nfont: 120%; -webkit-box-shadow: 10px 10px 5px #888;}")
