@@ -91,6 +91,11 @@ describe "Lexer", ->
       lexer = new Lexer(",")
       lexer.comma().should.have.property('type', ',')
 
+  describe "percent", ->
+    it "returns percent token if single percent", ->
+      lexer = new Lexer("%")
+      lexer.percent().should.have.property('type', '%')
+
   describe "identifier", ->
     it "handles single-word value as identifier", ->
       lexer = new Lexer("Times")
@@ -186,7 +191,7 @@ describe "Lexer", ->
 
   describe "advance", ->
     it 'should find all tokens in "#test p .good {color: #fff;\\nfont: 12px; -webkit-box-shadow: 10px 10px 5px #888; }"', ->
-      lexer = new Lexer("#test p .good {color: #fff;\nfont: 12px; -webkit-box-shadow: 10px 10px 5px #888;}")
+      lexer = new Lexer("#test p .good {color: #fff;\nfont: 120%; -webkit-box-shadow: 10px 10px 5px #888;}")
       lexer.advance().should.have.property('type', 'id')
       lexer.advance().should.have.property('type', 'whitespace')
       lexer.advance().should.have.property('type', 'tag')
@@ -204,7 +209,7 @@ describe "Lexer", ->
       lexer.advance().should.have.property('type', ':')
       lexer.advance().should.have.property('type', 'whitespace')
       lexer.advance().should.have.property('type', 'number')
-      lexer.advance().should.have.property('type', 'identifier')
+      lexer.advance().should.have.property('type', '%')
       lexer.advance().should.have.property('type', ';')
       lexer.advance().should.have.property('type', 'whitespace')
       lexer.advance().should.have.property('type', 'property')

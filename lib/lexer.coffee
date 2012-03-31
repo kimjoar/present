@@ -96,6 +96,9 @@ Lexer.prototype =
   comma: ->
     this.scan(/^,/, ",")
 
+  percent: ->
+    this.scan(/^%/, "%")
+
   identifier: ->
     this.scan(/^([a-zA-Z]+)/, 'identifier')
 
@@ -133,6 +136,7 @@ Lexer.prototype =
       this.property()   or
       this.colon()      or
       this.comma()      or
+      this.percent()    or
       this.identifier() or
       this.number()     or
       this.string()     or
