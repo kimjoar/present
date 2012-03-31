@@ -16,7 +16,7 @@ describe "Lexer", ->
   describe "eos", ->
     it "returns eos token if at end-of-source", ->
       ensure
-        input: "",
+        input: ""
         type:  "eos"
 
     it "returns undefined if not at end-of-source", ->
@@ -26,56 +26,56 @@ describe "Lexer", ->
   describe "tag", ->
     it "returns tag token if proper tag selector", ->
       ensure
-        input: "h1",
-        type:  "tag",
+        input: "h1"
+        type:  "tag"
         val:   "h1"
 
   describe "pseudo", ->
     it "returns pseudo token if proper pseudo-class", ->
       ensure
-        input: ":hover",
-        type:  "pseudo",
+        input: ":hover"
+        type:  "pseudo"
         val:   "hover"
 
     it "returns pseudo token if pseudo-class contains -", ->
       ensure
-        input: ":first-line",
-        type:  "pseudo",
+        input: ":first-line"
+        type:  "pseudo"
         val:   "first-line"
 
   describe "id", ->
     it "returns id token if proper id selector", ->
       ensure
-        input: "#test",
-        type:  "id",
+        input: "#test"
+        type:  "id"
         val:   "test"
 
     it "does not include ' ' in id", ->
       ensure
-        input: "#test p",
-        type:  "id",
+        input: "#test p"
+        type:  "id"
         val:   "test"
 
   describe "className", ->
     it "returns class token if proper class selector", ->
       ensure
-        input: ".test",
-        type:  "class",
-        func:  "className",
+        input: ".test"
+        type:  "class"
+        func:  "className"
         val:   "test"
 
   describe "braces", ->
     it "returns start braces token if a start braces is present", ->
       ensure
-        input: "{",
-        type:  "startBraces",
-        func:  "braces",
+        input: "{"
+        type:  "startBraces"
+        func:  "braces"
 
     it "returns end braces token if an end braces is present", ->
       ensure
-        input: "}",
-        type:  "endBraces",
-        func:  "braces",
+        input: "}"
+        type:  "endBraces"
+        func:  "braces"
 
   describe "property", ->
     it "returns a property token if proper property", ->
@@ -90,75 +90,75 @@ describe "Lexer", ->
 
     it "returns correct value if proper property", ->
       ensure
-        input: "background-color:",
-        type:  "property",
+        input: "background-color:"
+        type:  "property"
         val:   "background-color"
 
   describe "colon", ->
     it "returns colon token if single colon", ->
       ensure
-        input: ":",
-        type:  ":",
+        input: ":"
+        type:  ":"
         func:  "colon"
 
   describe "comma", ->
     it "returns comma token if single comma", ->
       ensure
-        input: ",",
-        type:  ",",
+        input: ","
+        type:  ","
         func:  "comma"
 
   describe "percent", ->
     it "returns percent token if single percent", ->
       ensure
-        input: "%",
-        type:  "%",
+        input: "%"
+        type:  "%"
         func:  "percent"
 
   describe "identifier", ->
     it "handles single-word value as identifier", ->
       ensure
         input: "Times"
-        type:  "identifier",
+        type:  "identifier"
         val:   "Times"
 
   describe "string", ->
     it "handles space separated strings", ->
       ensure
         input: '"New Century Schoolbook"'
-        type:  "string",
+        type:  "string"
         val:   '"New Century Schoolbook"'
 
     it "handles strings with _", ->
       ensure
         input: "'_test'"
-        type:  "string",
+        type:  "string"
         val:   "'_test'"
 
   describe "number", ->
     it "handles 0-9 one or more times as a number", ->
       ensure
         input: "123"
-        type:  "number",
+        type:  "number"
         val:   "123"
 
     it "handles number containing .", ->
       ensure
         input: "12.3"
-        type:  "number",
+        type:  "number"
         val:   "12.3"
 
   describe "color", ->
     it "handles shortened hex colors", ->
       ensure
         input: "#fff"
-        type:  "color",
+        type:  "color"
         val:   "#fff"
 
     it "handles regular hex colors", ->
       ensure
         input: "#abc123"
-        type:  "color",
+        type:  "color"
         val:   "#abc123"
 
   describe "value", ->
@@ -233,47 +233,47 @@ describe "Lexer", ->
   describe "advance", ->
     it 'should find pseudo selector in "p:first-child {color: #fff; }"', ->
       advances "p:first-child {color: #fff; }",
-        ["tag",
-         "pseudo",
+        ["tag"
+         "pseudo"
          "whitespace"]
 
     it 'should find all tokens in "#test p .good {color: #fff !important;\\nfont: 12px; -webkit-box-shadow: 10px 10px 5px #888; }"', ->
       advances "#test p .good {color: #fff !important;\nfont: 120%; -webkit-box-shadow: 10px 10px 5px #888;}",
-        ['id',
-         'whitespace',
-         'tag',
-         'whitespace',
-         'class',
-         'whitespace',
-         'startBraces',
-         'property',
-         ':',
-         'whitespace',
-         'color',
-         'whitespace',
-         'important',
-         ';',
-         'newline',
-         'property',
-         ':',
-         'whitespace',
-         'number',
-         '%',
-         ';',
-         'whitespace',
-         'property',
-         ':',
-         'whitespace',
-         'number',
-         'identifier',
-         'whitespace',
-         'number',
-         'identifier',
-         'whitespace',
-         'number',
-         'identifier',
-         'whitespace',
-         'color',
-         ';',
-         'endBraces',
+        ['id'
+         'whitespace'
+         'tag'
+         'whitespace'
+         'class'
+         'whitespace'
+         'startBraces'
+         'property'
+         ':'
+         'whitespace'
+         'color'
+         'whitespace'
+         'important'
+         ';'
+         'newline'
+         'property'
+         ':'
+         'whitespace'
+         'number'
+         '%'
+         ';'
+         'whitespace'
+         'property'
+         ':'
+         'whitespace'
+         'number'
+         'identifier'
+         'whitespace'
+         'number'
+         'identifier'
+         'whitespace'
+         'number'
+         'identifier'
+         'whitespace'
+         'color'
+         ';'
+         'endBraces'
          'eos']
