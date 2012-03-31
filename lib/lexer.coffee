@@ -114,6 +114,9 @@ Lexer.prototype =
   color: ->
     this.scan(/^(#[0-9a-fA-F]{3,6})/, 'color')
 
+  important: ->
+    this.scan(/^!important/, 'important');
+
   whitespace: ->
     this.scan(/^([ ]+)/, 'whitespace')
 
@@ -141,6 +144,7 @@ Lexer.prototype =
       this.number()     or
       this.string()     or
       this.color()      or
+      this.important()  or
       this.value()      or
       this.semicolon()  or
       this.eos()

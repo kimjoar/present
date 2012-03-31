@@ -178,6 +178,11 @@ describe "Lexer", ->
       lexer = new Lexer(";")
       lexer.semicolon().should.have.property('type', ';')
 
+  describe "!important", ->
+    it "returns important token if !important", ->
+      lexer = new Lexer("!important")
+      lexer.important().should.have.property('type', 'important')
+
   describe "newline", ->
     it "returns newline token if single newline", ->
       lexer = new Lexer("\n")
@@ -196,8 +201,8 @@ describe "Lexer", ->
       lexer.lineno.should.equal(1)
 
   describe "advance", ->
-    it 'should find all tokens in "#test p .good {color: #fff;\\nfont: 12px; -webkit-box-shadow: 10px 10px 5px #888; }"', ->
-      lexer = new Lexer("#test p .good {color: #fff;\nfont: 120%; -webkit-box-shadow: 10px 10px 5px #888;}")
+    it 'should find all tokens in "#test p .good {color: #fff !important;\\nfont: 12px; -webkit-box-shadow: 10px 10px 5px #888; }"', ->
+      lexer = new Lexer("#test p .good {color: #fff !important;\nfont: 120%; -webkit-box-shadow: 10px 10px 5px #888;}")
       lexer.advance().should.have.property('type', 'id')
       lexer.advance().should.have.property('type', 'whitespace')
       lexer.advance().should.have.property('type', 'tag')
@@ -209,6 +214,8 @@ describe "Lexer", ->
       lexer.advance().should.have.property('type', ':')
       lexer.advance().should.have.property('type', 'whitespace')
       lexer.advance().should.have.property('type', 'color')
+      lexer.advance().should.have.property('type', 'whitespace')
+      lexer.advance().should.have.property('type', 'important')
       lexer.advance().should.have.property('type', ';')
       lexer.advance().should.have.property('type', 'newline')
       lexer.advance().should.have.property('type', 'property')
