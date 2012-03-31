@@ -72,6 +72,11 @@ describe "Lexer", ->
       lexer.property().should.have.property('type', 'property')
       lexer.deferred().should.have.property('type', ':')
 
+    it "returns a property token if browser specific property", ->
+      lexer = new Lexer("-webkit-box-shadow:")
+      lexer.property().should.have.property('type', 'property')
+      lexer.deferred().should.have.property('type', ':')
+
     it "returns correct value if proper property", ->
       lexer = new Lexer("background-color:")
       lexer.property().should.have.property('val', 'background-color')
@@ -147,42 +152,13 @@ describe "Lexer", ->
       lexer.newline().should.have.property('type', 'newline')
 
   describe "advance", ->
-    it 'should find all tokens in "#test {}"', ->
-      lexer = new Lexer("#test {}")
-      lexer.advance().should.have.property('type', 'id')
-      lexer.advance().should.have.property('type', 'whitespace')
-      lexer.advance().should.have.property('type', 'startBraces')
-      lexer.advance().should.have.property('type', 'endBraces')
-      lexer.advance().should.have.property('type', 'eos')
-
-    it 'should find all tokens in "#test p .good {}"', ->
-      lexer = new Lexer("#test p .good {}")
+    it 'should find all tokens in "#test p .good {color: #fff;\\nfont: 12px; -webkit-box-shadow: 10px 10px 5px #888; }"', ->
+      lexer = new Lexer("#test p .good {color: #fff;\nfont: 12px; -webkit-box-shadow: 10px 10px 5px #888;}")
       lexer.advance().should.have.property('type', 'id')
       lexer.advance().should.have.property('type', 'whitespace')
       lexer.advance().should.have.property('type', 'tag')
       lexer.advance().should.have.property('type', 'whitespace')
       lexer.advance().should.have.property('type', 'class')
-      lexer.advance().should.have.property('type', 'whitespace')
-      lexer.advance().should.have.property('type', 'startBraces')
-      lexer.advance().should.have.property('type', 'endBraces')
-      lexer.advance().should.have.property('type', 'eos')
-
-    it 'should find all tokens in "#test {color: #fff;}"', ->
-      lexer = new Lexer("#test {color: #fff;}")
-      lexer.advance().should.have.property('type', 'id')
-      lexer.advance().should.have.property('type', 'whitespace')
-      lexer.advance().should.have.property('type', 'startBraces')
-      lexer.advance().should.have.property('type', 'property')
-      lexer.advance().should.have.property('type', ':')
-      lexer.advance().should.have.property('type', 'whitespace')
-      lexer.advance().should.have.property('type', 'value')
-      lexer.advance().should.have.property('type', ';')
-      lexer.advance().should.have.property('type', 'endBraces')
-      lexer.advance().should.have.property('type', 'eos')
-
-    it 'should find all tokens in "#test {color: #fff;\nfont: 12px;}"', ->
-      lexer = new Lexer("#test {color: #fff;\nfont: 12px}")
-      lexer.advance().should.have.property('type', 'id')
       lexer.advance().should.have.property('type', 'whitespace')
       lexer.advance().should.have.property('type', 'startBraces')
       lexer.advance().should.have.property('type', 'property')
@@ -195,5 +171,12 @@ describe "Lexer", ->
       lexer.advance().should.have.property('type', ':')
       lexer.advance().should.have.property('type', 'whitespace')
       lexer.advance().should.have.property('type', 'value')
+      lexer.advance().should.have.property('type', ';')
+      lexer.advance().should.have.property('type', 'whitespace')
+      lexer.advance().should.have.property('type', 'property')
+      lexer.advance().should.have.property('type', ':')
+      lexer.advance().should.have.property('type', 'whitespace')
+      lexer.advance().should.have.property('type', 'value')
+      lexer.advance().should.have.property('type', ';')
       lexer.advance().should.have.property('type', 'endBraces')
       lexer.advance().should.have.property('type', 'eos')
