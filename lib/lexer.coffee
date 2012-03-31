@@ -49,7 +49,7 @@ Lexer.prototype =
   # pseudo-class
   #
   pseudo: ->
-    this.scan(/:([\w-]+)/, 'pseudo')
+    this.scan(/^:([\w-]+)/, 'pseudo')
 
   #
   # braces
@@ -134,6 +134,7 @@ Lexer.prototype =
   next: ->
     this.deferred()     or
       this.comment()    or
+      this.pseudo()     or
       this.id()         or
       this.whitespace() or
       this.newline()    or

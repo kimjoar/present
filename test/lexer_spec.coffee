@@ -208,6 +208,12 @@ describe "Lexer", ->
       comment.should.have.property('val', '/* testing */')
 
   describe "advance", ->
+    it 'should find pseudo selector in "p:first-child {color: #fff; }"', ->
+      lexer = new Lexer("p:first-child {color: #fff; }")
+      lexer.advance().should.have.property('type', 'tag')
+      lexer.advance().should.have.property('type', 'pseudo')
+      lexer.advance().should.have.property('type', 'whitespace')
+
     it 'should find all tokens in "#test p .good {color: #fff !important;\\nfont: 12px; -webkit-box-shadow: 10px 10px 5px #888; }"', ->
       lexer = new Lexer("#test p .good {color: #fff !important;\nfont: 120%; -webkit-box-shadow: 10px 10px 5px #888;}")
       lexer.advance().should.have.property('type', 'id')
