@@ -1,21 +1,21 @@
 Lexer = require('../lib/lexer')
 should = require('should')
 
-ensure = (opts) ->
+ensureToken = (opts) ->
   opts.func = opts.type unless opts.func
   lexer = new Lexer(opts.input)
   out = lexer[opts.func].apply lexer
   out.should.have.property('type', opts.type)
   out.should.have.property('val', opts.val) if opts.val
 
-advances = (string, tokens) ->
+advanceTokens = (string, tokens) ->
   lexer = new Lexer(string)
   lexer.advance().should.have.property('type', type) for type in tokens
 
 describe "Lexer", ->
   describe "eos", ->
     it "returns eos token if at end-of-source", ->
-      ensure
+      ensureToken
         input: ""
         type:  "eos"
 
@@ -25,40 +25,40 @@ describe "Lexer", ->
 
   describe "tag", ->
     it "returns tag token if proper tag selector", ->
-      ensure
+      ensureToken
         input: "h1"
         type:  "tag"
         val:   "h1"
 
   describe "pseudo", ->
     it "returns pseudo token if proper pseudo-class", ->
-      ensure
+      ensureToken
         input: ":hover"
         type:  "pseudo"
         val:   "hover"
 
     it "returns pseudo token if pseudo-class contains -", ->
-      ensure
+      ensureToken
         input: ":first-line"
         type:  "pseudo"
         val:   "first-line"
 
   describe "id", ->
     it "returns id token if proper id selector", ->
-      ensure
+      ensureToken
         input: "#test"
         type:  "id"
         val:   "test"
 
     it "does not include ' ' in id", ->
-      ensure
+      ensureToken
         input: "#test p"
         type:  "id"
         val:   "test"
 
   describe "className", ->
     it "returns class token if proper class selector", ->
-      ensure
+      ensureToken
         input: ".test"
         type:  "class"
         func:  "className"
@@ -66,13 +66,13 @@ describe "Lexer", ->
 
   describe "braces", ->
     it "returns start braces token if a start braces is present", ->
-      ensure
+      ensureToken
         input: "{"
         type:  "startBraces"
         func:  "braces"
 
     it "returns end braces token if an end braces is present", ->
-      ensure
+      ensureToken
         input: "}"
         type:  "endBraces"
         func:  "braces"
@@ -89,127 +89,127 @@ describe "Lexer", ->
       lexer.deferred().should.have.property('type', ':')
 
     it "returns correct value if proper property", ->
-      ensure
+      ensureToken
         input: "background-color:"
         type:  "property"
         val:   "background-color"
 
   describe "colon", ->
     it "returns colon token if single colon", ->
-      ensure
+      ensureToken
         input: ":"
         type:  ":"
         func:  "colon"
 
   describe "comma", ->
     it "returns comma token if single comma", ->
-      ensure
+      ensureToken
         input: ","
         type:  ","
         func:  "comma"
 
   describe "percent", ->
     it "returns percent token if single percent", ->
-      ensure
+      ensureToken
         input: "%"
         type:  "%"
         func:  "percent"
 
   describe "identifier", ->
     it "handles single-word value as identifier", ->
-      ensure
+      ensureToken
         input: "Times"
         type:  "identifier"
         val:   "Times"
 
   describe "string", ->
     it "handles space separated strings", ->
-      ensure
+      ensureToken
         input: '"New Century Schoolbook"'
         type:  "string"
         val:   '"New Century Schoolbook"'
 
     it "handles strings with _", ->
-      ensure
+      ensureToken
         input: "'_test'"
         type:  "string"
         val:   "'_test'"
 
   describe "number", ->
     it "handles 0-9 one or more times as a number", ->
-      ensure
+      ensureToken
         input: "123"
         type:  "number"
         val:   "123"
 
     it "handles number containing .", ->
-      ensure
+      ensureToken
         input: "12.3"
         type:  "number"
         val:   "12.3"
 
   describe "color", ->
     it "handles shortened hex colors", ->
-      ensure
+      ensureToken
         input: "#fff"
         type:  "color"
         val:   "#fff"
 
     it "handles regular hex colors", ->
-      ensure
+      ensureToken
         input: "#abc123"
         type:  "color"
         val:   "#abc123"
 
   describe "value", ->
     it "handles ()", ->
-      ensure
+      ensureToken
         input: "white url(candybar.gif)"
-        type: "value"
-        val: "white url(candybar.gif)"
+        type:  "value"
+        val:   "white url(candybar.gif)"
 
     it "handles %", ->
-      ensure
+      ensureToken
         input: "200%"
-        type: "value"
-        val: "200%"
+        type:  "value"
+        val:   "200%"
 
     it "does not include ;", ->
-      ensure
+      ensureToken
         input: "200%;"
-        type: "value"
-        val: "200%"
+        type:  "value"
+        val:   "200%"
 
     it "does not include !", ->
-      ensure
+      ensureToken
         input: "200% !important"
-        type: "value"
-        val: "200% "
+        type:  "value"
+        val:   "200% "
 
     it "does not include }", ->
-      ensure
+      ensureToken
         input: "200%}"
-        type: "value"
-        val: "200%"
+        type:  "value"
+        val:   "200%"
 
   describe "semicolon", ->
     it "returns semicolon token if single semicolon", ->
-      ensure
+      ensureToken
         input: ";"
-        type: ";"
-        func: "semicolon"
+        type:  ";"
+        func:  "semicolon"
 
   describe "!important", ->
     it "returns important token if !important", ->
-      ensure
+      ensureToken
         input: "!important"
-        type: "important"
+        type:  "important"
 
   describe "newline", ->
     it "returns newline token if single newline", ->
-      ensure
+      ensureToken
         input: "\n"
-        type: "newline"
+        type:  "newline"
 
     it "increases lineno when matches", ->
       lexer = new Lexer("\n")
@@ -225,20 +225,20 @@ describe "Lexer", ->
 
   describe "comment", ->
     it "handles comment on one line", ->
-      ensure
+      ensureToken
         input: '/* testing */'
-        type: 'comment'
-        val: '/* testing */'
+        type:  'comment'
+        val:   '/* testing */'
 
   describe "advance", ->
     it 'should find pseudo selector in "p:first-child {color: #fff; }"', ->
-      advances "p:first-child {color: #fff; }",
+      advanceTokens "p:first-child {color: #fff; }",
         ["tag"
          "pseudo"
          "whitespace"]
 
     it 'should find all tokens in "#test p .good {color: #fff !important;\\nfont: 12px; -webkit-box-shadow: 10px 10px 5px #888; }"', ->
-      advances "#test p .good {color: #fff !important;\nfont: 120%; -webkit-box-shadow: 10px 10px 5px #888;}",
+      advanceTokens "#test p .good {color: #fff !important;\nfont: 120%; -webkit-box-shadow: 10px 10px 5px #888;}",
         ['id'
          'whitespace'
          'tag'
