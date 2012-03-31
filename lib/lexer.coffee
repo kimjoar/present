@@ -115,7 +115,10 @@ Lexer.prototype =
     this.scan(/^([ ]+)/, 'whitespace')
 
   newline: ->
-    this.scan(/^(\n)/, 'newline')
+    newline = this.scan(/^(\n)/, 'newline')
+    if newline
+      this.lineno += 1
+      newline
 
   advance: ->
     this.next()

@@ -172,6 +172,18 @@ describe "Lexer", ->
       lexer = new Lexer("\n")
       lexer.newline().should.have.property('type', 'newline')
 
+    it "increases lineno when matches", ->
+      lexer = new Lexer("\n")
+      lexer.lineno.should.equal(1)
+      lexer.newline()
+      lexer.lineno.should.equal(2)
+
+    it "does not increase lineno when no match", ->
+      lexer = new Lexer("test")
+      lexer.lineno.should.equal(1)
+      lexer.newline()
+      lexer.lineno.should.equal(1)
+
   describe "advance", ->
     it 'should find all tokens in "#test p .good {color: #fff;\\nfont: 12px; -webkit-box-shadow: 10px 10px 5px #888; }"', ->
       lexer = new Lexer("#test p .good {color: #fff;\nfont: 12px; -webkit-box-shadow: 10px 10px 5px #888;}")
