@@ -4,6 +4,7 @@ Lexer = module.exports = (str, options) ->
   this.lineno = 1
   this.deferredTokens = []
   this.inBraces = false
+  this.inBrackets = false
 
 Lexer.prototype =
   #
@@ -42,7 +43,7 @@ Lexer.prototype =
   # tag selector
   #
   tag: ->
-    return if this.inBraces
+    return if this.inBraces or this.inBrackets
     this.scan(/^(\w+)/, 'tag')
 
   #
@@ -63,6 +64,19 @@ Lexer.prototype =
       this.inBraces = false
       this.consume(captures[0].length)
       this.token('endBraces', captures[1])
+
+  #
+  # brackets
+  #
+  bracket: ->
+    if captures = /^\[/.exec(this.input)
+      this.inBrackets = true
+      this.consume(captures[0].length)
+      this.token('[', captures[1])
+    else if captures = /^\]/.exec(this.input)
+      this.inBrackets = false
+      this.consume(captures[0].length)
+      this.token(']', captures[1])
 
   #
   # id selector
@@ -139,6 +153,7 @@ Lexer.prototype =
       this.whitespace() or
       this.newline()    or
       this.braces()     or
+      this.bracket()    or
       this.tag()        or
       this.className()  or
       this.property()   or

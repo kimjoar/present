@@ -94,6 +94,19 @@ describe "Lexer", ->
         type:  "property"
         val:   "background-color"
 
+  describe "bracket", ->
+    it "returns bracket token if start bracket", ->
+      ensureToken
+        input: "["
+        type:  "["
+        func:  "bracket"
+
+    it "returns bracket token if end bracket", ->
+      ensureToken
+        input: "]"
+        type:  "]"
+        func:  "bracket"
+
   describe "colon", ->
     it "returns colon token if single colon", ->
       ensureToken
@@ -236,6 +249,13 @@ describe "Lexer", ->
         ["tag"
          "pseudo"
          "whitespace"]
+
+    it 'should handle brackets in "p[test] {color: #fff; }"', ->
+      advanceTokens "p[test] {color: #fff; }",
+        ["tag"
+         "["
+         "identifier",
+         "]"]
 
     it 'should find all tokens in "#test p .good {color: #fff !important;\\nfont: 12px; -webkit-box-shadow: 10px 10px 5px #888; }"', ->
       advanceTokens "#test p .good {color: #fff !important;\nfont: 120%; -webkit-box-shadow: 10px 10px 5px #888;}",
