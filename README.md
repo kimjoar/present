@@ -1,10 +1,8 @@
 Present
 =======
 
-Install new version of Node.js
+Playing with CSS lexing
 
-Run `make test`
+Run tests:
 
-Enjoy
-
-(For continuous development: `bundle install` and `bundle exec guard`)
+   make test
