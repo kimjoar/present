@@ -86,25 +86,52 @@ describe "Lexer", ->
       lexer = new Lexer(":")
       lexer.colon().should.have.property('type', ':')
 
-  describe "value", ->
-    it "handles single-word value", ->
+  describe "comma", ->
+    it "returns comma token if single comma", ->
+      lexer = new Lexer(",")
+      lexer.comma().should.have.property('type', ',')
+
+  describe "identifier", ->
+    it "handles single-word value as identifier", ->
       lexer = new Lexer("Times")
-      value = lexer.value()
-      value.should.have.property('type', 'value')
-      value.should.have.property('val', 'Times')
+      identifier = lexer.identifier()
+      identifier.should.have.property('type', 'identifier')
+      identifier.should.have.property('val', 'Times')
 
-    it "handles comma-separated words", ->
-      lexer = new Lexer("Times, serif")
-      value = lexer.value()
-      value.should.have.property('type', 'value')
-      value.should.have.property('val', 'Times, serif')
-
-    it "handles \"", ->
+  describe "string", ->
+    it "handles space separated strings", ->
       lexer = new Lexer('"New Century Schoolbook"')
-      value = lexer.value()
-      value.should.have.property('type', 'value')
-      value.should.have.property('val', '"New Century Schoolbook"')
+      string = lexer.string()
+      string.should.have.property('type', 'string')
+      string.should.have.property('val', '"New Century Schoolbook"')
 
+    it "handles strings with _", ->
+      lexer = new Lexer("'_test'")
+      string = lexer.string()
+      string.should.have.property('type', 'string')
+      string.should.have.property('val', "'_test'")
+
+  describe "number", ->
+    it "handles 0-9 one or more times as a number", ->
+      lexer = new Lexer("123")
+      number = lexer.number()
+      number.should.have.property('type', 'number')
+      number.should.have.property('val', "123")
+
+  describe "color", ->
+    it "handles shortened hex colors", ->
+      lexer = new Lexer("#fff")
+      color = lexer.color()
+      color.should.have.property('type', 'color')
+      color.should.have.property('val', '#fff')
+
+    it "handles regular hex colors", ->
+      lexer = new Lexer("#abc123")
+      color = lexer.color()
+      color.should.have.property('type', 'color')
+      color.should.have.property('val', '#abc123')
+
+  describe "value", ->
     it "handles ()", ->
       lexer = new Lexer("white url(candybar.gif)")
       value = lexer.value()
@@ -116,12 +143,6 @@ describe "Lexer", ->
       value = lexer.value()
       value.should.have.property('type', 'value')
       value.should.have.property('val', '200%')
-
-    it "handles #", ->
-      lexer = new Lexer("#fff")
-      value = lexer.value()
-      value.should.have.property('type', 'value')
-      value.should.have.property('val', '#fff')
 
     it "does not include ;", ->
       lexer = new Lexer("200%;")
@@ -164,19 +185,29 @@ describe "Lexer", ->
       lexer.advance().should.have.property('type', 'property')
       lexer.advance().should.have.property('type', ':')
       lexer.advance().should.have.property('type', 'whitespace')
-      lexer.advance().should.have.property('type', 'value')
+      lexer.advance().should.have.property('type', 'color')
       lexer.advance().should.have.property('type', ';')
       lexer.advance().should.have.property('type', 'newline')
       lexer.advance().should.have.property('type', 'property')
       lexer.advance().should.have.property('type', ':')
       lexer.advance().should.have.property('type', 'whitespace')
-      lexer.advance().should.have.property('type', 'value')
+      lexer.advance().should.have.property('type', 'number')
+      lexer.advance().should.have.property('type', 'identifier')
       lexer.advance().should.have.property('type', ';')
       lexer.advance().should.have.property('type', 'whitespace')
       lexer.advance().should.have.property('type', 'property')
       lexer.advance().should.have.property('type', ':')
       lexer.advance().should.have.property('type', 'whitespace')
-      lexer.advance().should.have.property('type', 'value')
+      lexer.advance().should.have.property('type', 'number')
+      lexer.advance().should.have.property('type', 'identifier')
+      lexer.advance().should.have.property('type', 'whitespace')
+      lexer.advance().should.have.property('type', 'number')
+      lexer.advance().should.have.property('type', 'identifier')
+      lexer.advance().should.have.property('type', 'whitespace')
+      lexer.advance().should.have.property('type', 'number')
+      lexer.advance().should.have.property('type', 'identifier')
+      lexer.advance().should.have.property('type', 'whitespace')
+      lexer.advance().should.have.property('type', 'color')
       lexer.advance().should.have.property('type', ';')
       lexer.advance().should.have.property('type', 'endBraces')
       lexer.advance().should.have.property('type', 'eos')

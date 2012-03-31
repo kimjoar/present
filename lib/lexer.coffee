@@ -93,8 +93,23 @@ Lexer.prototype =
   semicolon: ->
     this.scan(/^;/, ";")
 
+  comma: ->
+    this.scan(/^,/, ",")
+
+  identifier: ->
+    this.scan(/^([a-zA-Z]+)/, 'identifier')
+
   value: ->
     this.scan(/^([^;!}]+)/, 'value')
+
+  string: ->
+    this.scan(/^([\"|\'][a-zA-Z0-9_ ]+[\"|\'])/, 'string')
+
+  number: ->
+    this.scan(/^([0-9]+)/, 'number')
+
+  color: ->
+    this.scan(/^(#[0-9a-fA-F]{3,6})/, 'color')
 
   whitespace: ->
     this.scan(/^([ ]+)/, 'whitespace')
@@ -115,6 +130,11 @@ Lexer.prototype =
       this.className()  or
       this.property()   or
       this.colon()      or
+      this.comma()      or
+      this.identifier() or
+      this.number()     or
+      this.string()     or
+      this.color()      or
       this.value()      or
       this.semicolon()  or
       this.eos()
