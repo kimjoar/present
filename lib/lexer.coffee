@@ -129,7 +129,7 @@ Lexer.prototype =
     this.scan(/^%/, "%")
 
   identifier: ->
-    this.scan(/^([a-zA-Z]+)/, 'identifier')
+    this.scan(/^([0-9a-zA-Z-]+)/, 'identifier')
 
   value: ->
     this.scan(/^([^;!}]+)/, 'value')
@@ -179,8 +179,8 @@ Lexer.prototype =
       this.colon()      or
       this.comma()      or
       this.percent()    or
-      this.identifier() or
       this.number()     or
+      this.identifier() or
       this.string()     or
       this.color()      or
       this.important()  or

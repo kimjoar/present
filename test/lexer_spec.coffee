@@ -166,6 +166,18 @@ describe "Lexer", ->
         type:  "identifier"
         val:   "Times"
 
+    it "handles '-' in identifier", ->
+      ensureToken
+        input: "ff-tisa-web-pro"
+        type:  "identifier"
+        val:   "ff-tisa-web-pro"
+
+    it "handles numbers in identifiers", ->
+      ensureToken
+        input: "tisapro1",
+        type:  "identifier"
+        val:   "tisapro1"
+
   describe "string", ->
     it "handles space separated strings", ->
       ensureToken
