@@ -143,7 +143,7 @@ Lexer.prototype =
     this.scan(/^([0-9a-zA-Z-]+)/, 'identifier')
 
   value: ->
-    this.scan(/^([^;!}]+)/, 'value')
+    this.scan(/^([^ ,;!}]+)/, 'value')
 
   string: ->
     this.scan(/^(\"[^\"]+\"|\'[^\']+\')/, 'string')

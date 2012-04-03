@@ -247,37 +247,6 @@ describe "Lexer", ->
     it "handles regular hex colors", ->
       ensureColorToken "#abc123"
 
-  describe "value", ->
-    it "handles ()", ->
-      ensureToken
-        input: "white url(candybar.gif)"
-        type:  "value"
-        val:   "white url(candybar.gif)"
-
-    it "handles %", ->
-      ensureToken
-        input: "200%"
-        type:  "value"
-        val:   "200%"
-
-    it "does not include ;", ->
-      ensureToken
-        input: "200%;"
-        type:  "value"
-        val:   "200%"
-
-    it "does not include !", ->
-      ensureToken
-        input: "200% !important"
-        type:  "value"
-        val:   "200% "
-
-    it "does not include }", ->
-      ensureToken
-        input: "200%}"
-        type:  "value"
-        val:   "200%"
-
   describe "semicolon", ->
     it "returns semicolon token if single semicolon", ->
       ensureToken
