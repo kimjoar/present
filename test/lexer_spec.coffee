@@ -311,13 +311,13 @@ describe "Lexer", ->
         val:   '/* testing */'
 
   describe "advance", ->
-    it 'should find pseudo selector in "p:first-child {color: #fff; }"', ->
+    it 'should handle pseudo selector', ->
       advanceTokens "p:first-child {color: #fff; }",
         ["tag"
          "pseudo"
          "whitespace"]
 
-    it 'should handle brackets in "p[test] {color: #fff; }"', ->
+    it 'should handle brackets', ->
       advanceTokens "p[test] {color: #fff; }",
         ["tag"
          "["
@@ -341,7 +341,7 @@ describe "Lexer", ->
          "eos"]
 
     it 'should handle *', ->
-      advanceTokens '* html {color: #fff;}',
+      advanceTokens '* html { color: #fff; }',
         ["tag",
          "whitespace",
          "tag",
