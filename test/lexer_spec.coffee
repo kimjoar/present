@@ -356,6 +356,25 @@ describe "Lexer", ->
         type:  "url"
         val:   "../images/template/topNavigation_domainLevel.gif"
 
+  describe "combinators", ->
+    it "should handle adjacent siblings selector (+)", ->
+      ensureToken
+        input: "+"
+        func:  "adjacentSibling"
+        type:  "+"
+
+    it "should handle general siblings selector (~)", ->
+      ensureToken
+        input: "~"
+        func:  "generalSibling"
+        type:  "~"
+
+    it "should handle child selector (>)", ->
+      ensureToken
+        input: ">"
+        func:  "child"
+        type:  ">"
+
   describe "lookahead", ->
     it "should be able to look ahead 1 token", ->
       lexer = new Lexer("h1 {}")

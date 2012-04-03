@@ -130,6 +130,15 @@ Lexer.prototype =
   percent: ->
     this.scan(/^%/, "%")
 
+  adjacentSibling: ->
+    this.scan(/^\+/, "+")
+
+  generalSibling: ->
+    this.scan(/^~/, "~")
+
+  child: ->
+    this.scan(/^>/, ">")
+
   identifier: ->
     this.scan(/^([0-9a-zA-Z-]+)/, 'identifier')
 
@@ -203,6 +212,9 @@ Lexer.prototype =
       this.equal()      or
       this.includes()   or
       this.dashmatch()  or
+      this.adjacentSibling() or
+      this.generalSibling() or
+      this.child()      or
       this.tag()        or
       this.className()  or
       this.property()   or
