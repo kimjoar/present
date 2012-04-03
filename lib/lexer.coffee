@@ -160,7 +160,7 @@ Lexer.prototype =
     this.scan(/^([ ]+)/, 'whitespace')
 
   comment: ->
-    this.scan(/^(\/\*.+\*\/)/, 'comment')
+    this.scan(/^(\/\*[^\*\/]+\*\/)/, 'comment')
 
   newline: ->
     if newline = this.scan(/^(\n)/, 'newline')

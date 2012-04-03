@@ -316,6 +316,14 @@ describe "Lexer", ->
         type:  'comment'
         val:   '/* testing */'
 
+    it "handles multiline comment", ->
+      comment = """
+               /* this is a
+                  long comment! */
+               """
+
+      ensureTokenType 'comment', comment
+
   describe "at-rule", ->
     ensureAtRuleToken = (name) ->
       ensureTokenType "atRule", "@#{name}"
@@ -347,6 +355,18 @@ describe "Lexer", ->
          "=",
          "string",
          "]"]
+
+    it 'should handle several comments', ->
+      advanceTokens '/* test */ a {} /* again */',
+        ["comment",
+         "whitespace"
+         "tag"
+         "whitespace"
+         "startBraces"
+         "endBraces"
+         "whitespace"
+         "comment"
+         "eos"]
 
     it 'should handle at-rules', ->
       advanceTokens '@charset "utf-8"',
