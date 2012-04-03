@@ -227,8 +227,8 @@ Lexer.prototype =
       this.identifier() or
       this.string()     or
       this.important()  or
-      this.value()      or
       this.semicolon()  or
+      this.value()      or
       this.eos()
 
   defer: (tok) ->
