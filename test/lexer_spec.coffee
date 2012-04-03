@@ -132,7 +132,7 @@ describe "Lexer", ->
         type:  "="
         func:  "equal"
 
-    it "returns includes token if =", ->
+    it "returns includes token if ~=", ->
       ensureToken
         input: "~="
         type:  "~="
