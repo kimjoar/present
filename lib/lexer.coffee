@@ -46,7 +46,14 @@ Lexer.prototype =
   #
   element: ->
     return if this.inBraces or this.inBrackets
-    this.scan(/^(\*|\w+)/, 'element')
+    this.scan(/^(\w+)/, 'element')
+
+  #
+  # universal selector
+  #
+  universal: ->
+    return if this.inBraces or this.inBrackets
+    this.scan(/^\*/, 'universal')
 
   #
   # at-rules
@@ -215,6 +222,7 @@ Lexer.prototype =
       this.adjacentSibling() or
       this.generalSibling() or
       this.child()      or
+      this.universal()  or
       this.element()    or
       this.className()  or
       this.property()   or

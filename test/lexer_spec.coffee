@@ -29,18 +29,34 @@ describe "Lexer", ->
       lexer = new Lexer("#test {}")
       should.not.exist(lexer.eos())
 
-  describe "element", ->
-    it "returns element token if proper element selector", ->
-      ensureToken
-        input: "h1"
-        type:  "element"
-        val:   "h1"
+  describe "selectors", ->
+    describe "universal selector", ->
+      it "returns universal token if *", ->
+        ensureToken
+          input: "*"
+          type:  "universal"
 
-    it "returns element token if *", ->
-      ensureToken
-        input: "*"
-        type:  "element"
-        val:   "*"
+    describe "type selectors", ->
+      it "returns element token if element selector", ->
+        ensureToken
+          input: "h1"
+          type:  "element"
+          val:   "h1"
+
+    describe "class selectors", ->
+      it "returns class token if class selector", ->
+        ensureToken
+          input: ".test"
+          type:  "class"
+          func:  "className"
+          val:   "test"
+
+    describe "id selectors", ->
+      it "returns id token if id selector", ->
+        ensureToken
+          input: "#test"
+          type:  "id"
+          val:   "test"
 
   describe "pseudo", ->
     it "returns pseudo token if pseudo class", ->
@@ -60,27 +76,6 @@ describe "Lexer", ->
         input: "::after"
         type:  "pseudo"
         val:   "::after"
-
-  describe "id", ->
-    it "returns id token if proper id selector", ->
-      ensureToken
-        input: "#test"
-        type:  "id"
-        val:   "test"
-
-    it "does not include ' ' in id", ->
-      ensureToken
-        input: "#test p"
-        type:  "id"
-        val:   "test"
-
-  describe "className", ->
-    it "returns class token if proper class selector", ->
-      ensureToken
-        input: ".test"
-        type:  "class"
-        func:  "className"
-        val:   "test"
 
   describe "braces", ->
     it "returns start braces token if a start braces is present", ->
@@ -419,7 +414,7 @@ describe "Lexer", ->
 
     it 'should handle *', ->
       advanceTokens '* html { color: #fff; }',
-        ["element",
+        ["universal",
          "whitespace",
          "element",
          "whitespace"]

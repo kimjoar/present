@@ -1,4 +1,4 @@
-element
+universal
 whitespace
 startBraces
 newline
