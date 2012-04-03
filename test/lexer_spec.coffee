@@ -217,47 +217,32 @@ describe "Lexer", ->
         val:   "-2"
 
   describe "color", ->
-    it "handles shortened hex colors", ->
+    ensureColorToken = (val) ->
       ensureToken
-        input: "#fff"
+        input: val
         type:  "color"
-        val:   "#fff"
+        val:   val
+
+    it "handles shortened hex colors", ->
+      ensureColorToken "#fff"
 
     it "handles rgb", ->
-      ensureToken
-        input: "rgb(255,0,0)"
-        type:  "color"
-        val:   "rgb(255,0,0)"
+      ensureColorToken "rgb(255,0,0)"
 
     it "handles rgb with %", ->
-      ensureToken
-        input: "rgb(100%, 20%, 0)"
-        type:  "color"
-        val:   "rgb(100%, 20%, 0)"
+      ensureColorToken "rgb(100%, 20%, 0)"
 
     it "handles rgba", ->
-      ensureToken
-        input: "rgba(0,255,0,0.1)"
-        type:  "color"
-        val:   "rgba(0,255,0,0.1)"
+      ensureColorToken "rgba(0,255,0,0.1)"
 
     it "handles hsl", ->
-      ensureToken
-        input: "hsl(360,10%,0%)"
-        type:  "color"
-        val:   "hsl(360,10%,0%)"
+      ensureColorToken "hsl(360,10%,0%)"
 
     it "handles hsla", ->
-      ensureToken
-        input: "rgba(0,50%,0%,0.1)"
-        type:  "color"
-        val:   "rgba(0,50%,0%,0.1)"
+      ensureColorToken "rgba(0,50%,0%,0.1)"
 
     it "handles regular hex colors", ->
-      ensureToken
-        input: "#abc123"
-        type:  "color"
-        val:   "#abc123"
+      ensureColorToken "#abc123"
 
   describe "value", ->
     it "handles ()", ->
