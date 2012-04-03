@@ -141,19 +141,15 @@ Lexer.prototype =
     this.scan(/^(-?[0-9\.]+)/, 'number')
 
   color: ->
-    hex = /^(#[0-9a-fA-F]{3,6})/
-    rgb = /^(rgb\([0-9]+, *[0-9]+, *[0-9]+\))/
-    rgba = /^(rgba\([0-9]+, *[0-9]+, *[0-9]+, *[0-9.]+\))/
+    colors =
+      hex:  /^(#[0-9a-fA-F]{3,6})/
+      rgb:  /^(rgb\([0-9]+, *[0-9]+, *[0-9]+\))/
+      rgba: /^(rgba\([0-9]+, *[0-9]+, *[0-9]+, *[0-9.]+\))/
 
-    if captures = hex.exec(this.input)
-      this.consume(captures[0].length)
-      this.token('color', captures[1])
-    else if captures = rgb.exec(this.input)
-      this.consume(captures[0].length)
-      this.token('color', captures[1])
-    else if captures = rgba.exec(this.input)
-      this.consume(captures[0].length)
-      this.token('color', captures[1])
+    for name, regex of colors
+      if captures = regex.exec(this.input)
+        this.consume(captures[0].length)
+        return this.token('color', captures[1])
 
   important: ->
     this.scan(/^!important/, 'important');
