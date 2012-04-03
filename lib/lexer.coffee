@@ -141,7 +141,19 @@ Lexer.prototype =
     this.scan(/^(-?[0-9\.]+)/, 'number')
 
   color: ->
-    this.scan(/^(#[0-9a-fA-F]{3,6})/, 'color')
+    hex = /^(#[0-9a-fA-F]{3,6})/
+    rgb = /^(rgb\([0-9]+, *[0-9]+, *[0-9]+\))/
+    rgba = /^(rgba\([0-9]+, *[0-9]+, *[0-9]+, *[0-9.]+\))/
+
+    if captures = hex.exec(this.input)
+      this.consume(captures[0].length)
+      this.token('color', captures[1])
+    else if captures = rgb.exec(this.input)
+      this.consume(captures[0].length)
+      this.token('color', captures[1])
+    else if captures = rgba.exec(this.input)
+      this.consume(captures[0].length)
+      this.token('color', captures[1])
 
   important: ->
     this.scan(/^!important/, 'important');
@@ -179,10 +191,10 @@ Lexer.prototype =
       this.colon()      or
       this.comma()      or
       this.percent()    or
+      this.color()      or
       this.number()     or
       this.identifier() or
       this.string()     or
-      this.color()      or
       this.important()  or
       this.value()      or
       this.semicolon()  or
