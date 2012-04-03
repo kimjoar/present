@@ -29,17 +29,17 @@ describe "Lexer", ->
       lexer = new Lexer("#test {}")
       should.not.exist(lexer.eos())
 
-  describe "tag", ->
-    it "returns tag token if proper tag selector", ->
+  describe "element", ->
+    it "returns element token if proper element selector", ->
       ensureToken
         input: "h1"
-        type:  "tag"
+        type:  "element"
         val:   "h1"
 
-    it "returns tag token if *", ->
+    it "returns element token if *", ->
       ensureToken
         input: "*"
-        type:  "tag"
+        type:  "element"
         val:   "*"
 
   describe "pseudo", ->
@@ -348,7 +348,7 @@ describe "Lexer", ->
     it "should be able to look ahead 1 token", ->
       lexer = new Lexer("h1 {}")
       token = lexer.lookahead(1)
-      token.should.have.property("type", "tag")
+      token.should.have.property("type", "element")
 
     it "should be able to look ahead more than one token", ->
       lexer = new Lexer("h1 {}")
@@ -359,18 +359,18 @@ describe "Lexer", ->
       lexer = new Lexer("h1 {}")
       lexer.lookahead(1)
       token = lexer.advance()
-      token.should.have.property("type", "tag")
+      token.should.have.property("type", "element")
 
   describe "peek", ->
     it "should look ahead 1 token", ->
       lexer = new Lexer("h1 {}")
       token = lexer.peek()
-      token.should.have.property("type", "tag")
+      token.should.have.property("type", "element")
 
   describe "advance", ->
     it 'should handles tabs', ->
       advanceTokens "h1\t{}",
-        ["tag"
+        ["element"
          "tab"
          "startBraces"
          "endBraces"
@@ -378,20 +378,20 @@ describe "Lexer", ->
 
     it 'should handle pseudo selector', ->
       advanceTokens "p:first-child {color: #fff; }",
-        ["tag"
+        ["element"
          "pseudo"
          "whitespace"]
 
     it 'should handle brackets', ->
       advanceTokens "p[test] {color: #fff; }",
-        ["tag"
+        ["element"
          "["
          "identifier",
          "]"]
 
     it 'should handle match in brackets', ->
       advanceTokens 'p[test="what"] {color: #fff; }',
-        ["tag"
+        ["element"
          "["
          "identifier",
          "=",
@@ -402,7 +402,7 @@ describe "Lexer", ->
       advanceTokens '/* test */ a {} /* again */',
         ["comment",
          "whitespace"
-         "tag"
+         "element"
          "whitespace"
          "startBraces"
          "endBraces"
@@ -419,16 +419,16 @@ describe "Lexer", ->
 
     it 'should handle *', ->
       advanceTokens '* html { color: #fff; }',
-        ["tag",
+        ["element",
          "whitespace",
-         "tag",
+         "element",
          "whitespace"]
 
     it 'should find all tokens in "#test p .good {color: #fff !important;\\nfont: 12px; -webkit-box-shadow: 10px 10px 5px #888; }"', ->
       advanceTokens "#test p .good {color: #fff !important;\nfont: 120%; -webkit-box-shadow: 10px 10px 5px #888;}",
         ['id'
          'whitespace'
-         'tag'
+         'element'
          'whitespace'
          'class'
          'whitespace'

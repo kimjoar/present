@@ -42,11 +42,11 @@ Lexer.prototype =
     this.token('eos')
 
   #
-  # tag selector
+  # element selector
   #
-  tag: ->
+  element: ->
     return if this.inBraces or this.inBrackets
-    this.scan(/^(\*|\w+)/, 'tag')
+    this.scan(/^(\*|\w+)/, 'element')
 
   #
   # at-rules
@@ -215,7 +215,7 @@ Lexer.prototype =
       this.adjacentSibling() or
       this.generalSibling() or
       this.child()      or
-      this.tag()        or
+      this.element()    or
       this.className()  or
       this.property()   or
       this.colon()      or
