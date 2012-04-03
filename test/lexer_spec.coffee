@@ -36,6 +36,12 @@ describe "Lexer", ->
         type:  "tag"
         val:   "h1"
 
+    it "returns tag token if *", ->
+      ensureToken
+        input: "*"
+        type:  "tag"
+        val:   "*"
+
   describe "pseudo", ->
     it "returns pseudo token if proper pseudo-class", ->
       ensureToken
@@ -297,6 +303,13 @@ describe "Lexer", ->
          "whitespace"
          "string"
          "eos"]
+
+    it 'should handle *', ->
+      advanceTokens '* html {color: #fff;}',
+        ["tag",
+         "whitespace",
+         "tag",
+         "whitespace"]
 
     it 'should find all tokens in "#test p .good {color: #fff !important;\\nfont: 12px; -webkit-box-shadow: 10px 10px 5px #888; }"', ->
       advanceTokens "#test p .good {color: #fff !important;\nfont: 120%; -webkit-box-shadow: 10px 10px 5px #888;}",
