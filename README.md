@@ -5,4 +5,4 @@ Playing with CSS lexing
 
 Run tests:
 
-   make test
+    make test
