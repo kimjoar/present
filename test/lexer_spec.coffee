@@ -333,7 +333,19 @@ describe "Lexer", ->
     it "handles @font-face", -> ensureAtRuleToken "font-face"
     it "handles @media",     -> ensureAtRuleToken "media"
 
+  describe "whitespace", ->
+    it "handles tabs", ->
+      ensureTokenType "tab", "\t"
+
   describe "advance", ->
+    it 'should handles tabs', ->
+      advanceTokens "h1\t{}",
+        ["tag"
+         "tab"
+         "startBraces"
+         "endBraces"
+         "eos"]
+
     it 'should handle pseudo selector', ->
       advanceTokens "p:first-child {color: #fff; }",
         ["tag"

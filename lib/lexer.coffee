@@ -159,6 +159,9 @@ Lexer.prototype =
   whitespace: ->
     this.scan(/^([ ]+)/, 'whitespace')
 
+  tab: ->
+    this.scan(/^(\t+)/, 'tab')
+
   comment: ->
     this.scan(/^(\/\*[^\*\/]+\*\/)/, 'comment')
 
@@ -177,6 +180,7 @@ Lexer.prototype =
       this.id()         or
       this.atRule()     or
       this.whitespace() or
+      this.tab()        or
       this.newline()    or
       this.braces()     or
       this.bracket()    or
