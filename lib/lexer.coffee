@@ -53,10 +53,10 @@ Lexer.prototype =
     this.scan(/^@charset/, 'charset')
 
   #
-  # pseudo-class
+  # pseudo classes and elements
   #
   pseudo: ->
-    this.scan(/^:([\w-]+)/, 'pseudo')
+    this.scan(/^(::?[\w-]+)/, 'pseudo')
 
   #
   # braces

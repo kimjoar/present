@@ -43,17 +43,23 @@ describe "Lexer", ->
         val:   "*"
 
   describe "pseudo", ->
-    it "returns pseudo token if proper pseudo-class", ->
+    it "returns pseudo token if pseudo class", ->
       ensureToken
         input: ":hover"
         type:  "pseudo"
-        val:   "hover"
+        val:   ":hover"
 
-    it "returns pseudo token if pseudo-class contains -", ->
+    it "returns pseudo token if pseudo class contains -", ->
       ensureToken
         input: ":first-line"
         type:  "pseudo"
-        val:   "first-line"
+        val:   ":first-line"
+
+    it "returns pseudo token if pseudo element", ->
+      ensureToken
+        input: "::after"
+        type:  "pseudo"
+        val:   "::after"
 
   describe "id", ->
     it "returns id token if proper id selector", ->
