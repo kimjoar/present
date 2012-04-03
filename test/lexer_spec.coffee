@@ -23,6 +23,12 @@ describe "Lexer", ->
       lexer = new Lexer("#test {}")
       should.not.exist(lexer.eos())
 
+  describe "charset", ->
+    it "returns charset token for '@charset'", ->
+      ensureToken
+        input: "@charset"
+        type:  "charset"
+
   describe "tag", ->
     it "returns tag token if proper tag selector", ->
       ensureToken
@@ -284,6 +290,13 @@ describe "Lexer", ->
          "=",
          "string",
          "]"]
+
+    it 'should handle charsets', ->
+      advanceTokens '@charset "utf-8"',
+        ["charset"
+         "whitespace"
+         "string"
+         "eos"]
 
     it 'should find all tokens in "#test p .good {color: #fff !important;\\nfont: 12px; -webkit-box-shadow: 10px 10px 5px #888; }"', ->
       advanceTokens "#test p .good {color: #fff !important;\nfont: 120%; -webkit-box-shadow: 10px 10px 5px #888;}",

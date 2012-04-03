@@ -44,7 +44,13 @@ Lexer.prototype =
   #
   tag: ->
     return if this.inBraces or this.inBrackets
-    this.scan(/^(\w+)/, 'tag')
+    this.scan(/^(\*|\w+)/, 'tag')
+
+  #
+  # @charset
+  #
+  charset: ->
+    this.scan(/^@charset/, 'charset')
 
   #
   # pseudo-class
@@ -159,6 +165,7 @@ Lexer.prototype =
       this.comment()    or
       this.pseudo()     or
       this.id()         or
+      this.charset()    or
       this.whitespace() or
       this.newline()    or
       this.braces()     or
