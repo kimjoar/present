@@ -312,9 +312,9 @@ describe "Lexer", ->
   describe "comment", ->
     it "handles comment on one line", ->
       ensureToken
-        input: '/* testing */'
+        input: '/* *testing */'
         type:  'comment'
-        val:   '/* testing */'
+        val:   '/* *testing */'
 
     it "handles multiline comment", ->
       comment = """

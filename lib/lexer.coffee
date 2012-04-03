@@ -163,7 +163,7 @@ Lexer.prototype =
     this.scan(/^(\t+)/, 'tab')
 
   comment: ->
-    this.scan(/^(\/\*[^\*\/]+\*\/)/, 'comment')
+    this.scan(/^(\/\*(?:\s|\S)+?\*\/)/, 'comment')
 
   newline: ->
     if newline = this.scan(/^(\n)/, 'newline')
