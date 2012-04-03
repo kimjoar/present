@@ -170,6 +170,9 @@ Lexer.prototype =
       this.lineno += 1
       newline
 
+  url: ->
+    this.scan(/^url\((.+)\)/, 'url')
+
   advance: ->
     this.next()
 

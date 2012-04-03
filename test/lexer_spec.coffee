@@ -337,6 +337,25 @@ describe "Lexer", ->
     it "handles tabs", ->
       ensureTokenType "tab", "\t"
 
+  describe "url", ->
+    it "should handle urls within '", ->
+      ensureToken
+        input: "url('../images/template/topNavigation_domainLevel.gif')"
+        type:  "url"
+        val:   "'../images/template/topNavigation_domainLevel.gif'"
+
+    it "should handle urls within '", ->
+      ensureToken
+        input: 'url("../images/template/topNavigation_domainLevel.gif")'
+        type:  "url"
+        val:   '"../images/template/topNavigation_domainLevel.gif"'
+
+    it "should handle bare urls", ->
+      ensureToken
+        input: "url(../images/template/topNavigation_domainLevel.gif)"
+        type:  "url"
+        val:   "../images/template/topNavigation_domainLevel.gif"
+
   describe "advance", ->
     it 'should handles tabs', ->
       advanceTokens "h1\t{}",
