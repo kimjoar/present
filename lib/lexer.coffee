@@ -138,7 +138,7 @@ Lexer.prototype =
     this.scan(/^(\"[^\"]+\"|\'[^\']+\')/, 'string')
 
   number: ->
-    this.scan(/^([0-9\.]+)/, 'number')
+    this.scan(/^(-?[0-9\.]+)/, 'number')
 
   color: ->
     this.scan(/^(#[0-9a-fA-F]{3,6})/, 'color')

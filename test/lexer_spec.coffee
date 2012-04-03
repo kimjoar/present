@@ -210,6 +210,12 @@ describe "Lexer", ->
         type:  "number"
         val:   "12.3"
 
+    it "handles negative numbers", ->
+      ensureToken
+        input: "-2"
+        type:  "number"
+        val:   "-2"
+
   describe "color", ->
     it "handles shortened hex colors", ->
       ensureToken
