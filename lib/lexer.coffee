@@ -223,6 +223,7 @@ Lexer.prototype =
       this.percent()    or
       this.color()      or
       this.number()     or
+      this.url()        or
       this.identifier() or
       this.string()     or
       this.important()  or
