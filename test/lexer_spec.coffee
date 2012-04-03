@@ -356,6 +356,29 @@ describe "Lexer", ->
         type:  "url"
         val:   "../images/template/topNavigation_domainLevel.gif"
 
+  describe "lookahead", ->
+    it "should be able to look ahead 1 token", ->
+      lexer = new Lexer("h1 {}")
+      token = lexer.lookahead(1)
+      token.should.have.property("type", "tag")
+
+    it "should be able to look ahead more than one token", ->
+      lexer = new Lexer("h1 {}")
+      token = lexer.lookahead(3)
+      token.should.have.property("type", "startBraces")
+
+    it "should not break advance", ->
+      lexer = new Lexer("h1 {}")
+      lexer.lookahead(1)
+      token = lexer.advance()
+      token.should.have.property("type", "tag")
+
+  describe "peek", ->
+    it "should look ahead 1 token", ->
+      lexer = new Lexer("h1 {}")
+      token = lexer.peek()
+      token.should.have.property("type", "tag")
+
   describe "advance", ->
     it 'should handles tabs', ->
       advanceTokens "h1\t{}",

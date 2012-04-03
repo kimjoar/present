@@ -5,6 +5,8 @@ Lexer = module.exports = (str, options) ->
   this.deferredTokens = []
   this.inBraces = false
   this.inBrackets = false
+  this.stash = []
+  this
 
 Lexer.prototype =
   #
@@ -173,8 +175,19 @@ Lexer.prototype =
   url: ->
     this.scan(/^url\((.+)\)/, 'url')
 
+  lookahead: (n) ->
+    fetch = n - this.stash.length;
+    this.stash.push(this.next()) while fetch-- > 0
+    this.stash[n - 1]
+
+  peek: ->
+    this.lookahead(1)
+
+  stashed: ->
+    this.stash.length && this.stash.shift()
+
   advance: ->
-    this.next()
+    this.stashed() || this.next()
 
   next: ->
     this.deferred()     or
