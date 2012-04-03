@@ -23,12 +23,6 @@ describe "Lexer", ->
       lexer = new Lexer("#test {}")
       should.not.exist(lexer.eos())
 
-  describe "charset", ->
-    it "returns charset token for '@charset'", ->
-      ensureToken
-        input: "@charset"
-        type:  "charset"
-
   describe "tag", ->
     it "returns tag token if proper tag selector", ->
       ensureToken
@@ -334,6 +328,18 @@ describe "Lexer", ->
         type:  'comment'
         val:   '/* testing */'
 
+  describe "at-rule", ->
+    ensureAtRuleToken = (name) ->
+      ensureToken
+        input: "@#{name}"
+        type:  "atRule"
+        val:   "@#{name}"
+
+    it "handles @import",    -> ensureAtRuleToken "import"
+    it "handles @charset",   -> ensureAtRuleToken "charset"
+    it "handles @font-face", -> ensureAtRuleToken "font-face"
+    it "handles @media",     -> ensureAtRuleToken "media"
+
   describe "advance", ->
     it 'should handle pseudo selector', ->
       advanceTokens "p:first-child {color: #fff; }",
@@ -357,9 +363,9 @@ describe "Lexer", ->
          "string",
          "]"]
 
-    it 'should handle charsets', ->
+    it 'should handle at-rules', ->
       advanceTokens '@charset "utf-8"',
-        ["charset"
+        ["atRule"
          "whitespace"
          "string"
          "eos"]

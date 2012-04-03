@@ -47,10 +47,10 @@ Lexer.prototype =
     this.scan(/^(\*|\w+)/, 'tag')
 
   #
-  # @charset
+  # at-rules
   #
-  charset: ->
-    this.scan(/^@charset/, 'charset')
+  atRule: ->
+    this.scan(/^(@[a-zA-Z-]+)/, 'atRule')
 
   #
   # pseudo classes and elements
@@ -175,7 +175,7 @@ Lexer.prototype =
       this.comment()    or
       this.pseudo()     or
       this.id()         or
-      this.charset()    or
+      this.atRule()     or
       this.whitespace() or
       this.newline()    or
       this.braces()     or
