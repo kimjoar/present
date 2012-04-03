@@ -173,11 +173,17 @@ describe "Lexer", ->
         type:  "string"
         val:   '"New Century Schoolbook"'
 
-    it "handles strings with _", ->
+    it "handles strings with special characters", ->
       ensureToken
-        input: "'_test'"
+        input: '"_#!/%^&"'
         type:  "string"
-        val:   "'_test'"
+        val:   '"_#!/%^&"'
+
+    it "handles strings in '", ->
+      ensureToken
+        input: "'New Century Schoolbook'"
+        type:  "string"
+        val:   "'New Century Schoolbook'"
 
   describe "number", ->
     it "handles 0-9 one or more times as a number", ->
