@@ -177,7 +177,7 @@ Lexer.prototype =
     this.scan(/^(\/\*(?:\s|\S)+?\*\/)/, 'comment')
 
   newline: ->
-    if newline = this.scan(/^(\n)/, 'newline')
+    if newline = this.scan(/^\n/, 'newline')
       this.lineno += 1
       newline
 
