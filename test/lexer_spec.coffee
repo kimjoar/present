@@ -229,11 +229,29 @@ describe "Lexer", ->
         type:  "color"
         val:   "rgb(255,0,0)"
 
+    it "handles rgb with %", ->
+      ensureToken
+        input: "rgb(100%, 20%, 0)"
+        type:  "color"
+        val:   "rgb(100%, 20%, 0)"
+
     it "handles rgba", ->
       ensureToken
         input: "rgba(0,255,0,0.1)"
         type:  "color"
         val:   "rgba(0,255,0,0.1)"
+
+    it "handles hsl", ->
+      ensureToken
+        input: "hsl(360,10%,0%)"
+        type:  "color"
+        val:   "hsl(360,10%,0%)"
+
+    it "handles hsla", ->
+      ensureToken
+        input: "rgba(0,50%,0%,0.1)"
+        type:  "color"
+        val:   "rgba(0,50%,0%,0.1)"
 
     it "handles regular hex colors", ->
       ensureToken
