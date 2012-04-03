@@ -8,6 +8,12 @@ ensureToken = (opts) ->
   out.should.have.property('type', opts.type)
   out.should.have.property('val', opts.val) if opts.val
 
+ensureTokenType = (type, val) ->
+  ensureToken
+    input: val
+    type:  type
+    val:   val
+
 advanceTokens = (string, tokens) ->
   lexer = new Lexer(string)
   lexer.advance().should.have.property('type', type) for type in tokens
@@ -218,10 +224,7 @@ describe "Lexer", ->
 
   describe "color", ->
     ensureColorToken = (val) ->
-      ensureToken
-        input: val
-        type:  "color"
-        val:   val
+      ensureTokenType "color", val
 
     it "handles shortened hex colors", ->
       ensureColorToken "#fff"
@@ -315,10 +318,7 @@ describe "Lexer", ->
 
   describe "at-rule", ->
     ensureAtRuleToken = (name) ->
-      ensureToken
-        input: "@#{name}"
-        type:  "atRule"
-        val:   "@#{name}"
+      ensureTokenType "atRule", "@#{name}"
 
     it "handles @import",    -> ensureAtRuleToken "import"
     it "handles @charset",   -> ensureAtRuleToken "charset"
