@@ -1,4 +1,4 @@
-Lexer = require('../lib/lexer')
+Lexer = require("../")
 should = require('should')
 fs = require('fs')
 path = require('path')
