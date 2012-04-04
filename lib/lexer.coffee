@@ -74,11 +74,11 @@ Lexer.prototype =
     if captures = /^{/.exec(this.input)
       this.inBraces = true
       this.consume(captures[0].length)
-      this.token('startBraces', captures[1])
+      this.token('{', captures[1])
     else if captures = /^}/.exec(this.input)
       this.inBraces = false
       this.consume(captures[0].length)
-      this.token('endBraces', captures[1])
+      this.token('}', captures[1])
 
   #
   # brackets

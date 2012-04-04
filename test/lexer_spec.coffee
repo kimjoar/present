@@ -81,13 +81,13 @@ describe "Lexer", ->
     it "returns start braces token if a start braces is present", ->
       ensureToken
         input: "{"
-        type:  "startBraces"
+        type:  "{"
         func:  "braces"
 
     it "returns end braces token if an end braces is present", ->
       ensureToken
         input: "}"
-        type:  "endBraces"
+        type:  "}"
         func:  "braces"
 
   describe "property", ->
@@ -348,7 +348,7 @@ describe "Lexer", ->
     it "should be able to look ahead more than one token", ->
       lexer = new Lexer("h1 {}")
       token = lexer.lookahead(3)
-      token.should.have.property("type", "startBraces")
+      token.should.have.property("type", "{")
 
     it "should not break advance", ->
       lexer = new Lexer("h1 {}")
@@ -367,8 +367,8 @@ describe "Lexer", ->
       advanceTokens "h1\t{}",
         ["element"
          "tab"
-         "startBraces"
-         "endBraces"
+         "{"
+         "}"
          "eos"]
 
     it 'should handle pseudo selector', ->
@@ -399,8 +399,8 @@ describe "Lexer", ->
          "whitespace"
          "element"
          "whitespace"
-         "startBraces"
-         "endBraces"
+         "{"
+         "}"
          "whitespace"
          "comment"
          "eos"]
@@ -427,7 +427,7 @@ describe "Lexer", ->
          'whitespace'
          'class'
          'whitespace'
-         'startBraces'
+         '{'
          'property'
          ':'
          'whitespace'
@@ -457,5 +457,5 @@ describe "Lexer", ->
          'whitespace'
          'color'
          ';'
-         'endBraces'
+         '}'
          'eos']
