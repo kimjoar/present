@@ -1,4 +1,4 @@
-Lexer = require("../")
+Lexer = require('../')
 should = require('should')
 fs = require('fs')
 path = require('path')
