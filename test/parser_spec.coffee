@@ -31,10 +31,23 @@ describe "Parser", ->
     it "handles ids", -> checkRule "#test", nodes.Selector
     it "handles classes", -> checkRule ".test", nodes.Selector
     it "handles whitespace", ->
-      checkRule " ", nodes.Whitespace
-      checkRule "\t", nodes.Whitespace
+      checkRule " h1", nodes.Node
+      checkRule "\th1", nodes.Node
+
+    it "handles several selectors", ->
+      parser = new Parser("h1,h2")
+      rule = parser.parseRule()
+      ruleNodes = rule.nodes
+      ruleNodes.length.should.equal(3)
+      ruleNodes[0].should.be.an.instanceof(nodes.Selector)
+      ruleNodes[2].should.be.an.instanceof(nodes.Selector)
 
     it "throws an error if token is unexpected", ->
       parser = new Parser("property: value")
       (() -> parser.parseRule()).should.throw(/unexpected type/i)
+
+    it "does not allow empty selector", ->
+      parser = new Parser("h1,")
+      (() -> parser.parseRule()).should.throw(/empty selector/i)
+
 
