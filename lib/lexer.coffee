@@ -149,9 +149,6 @@ Lexer.prototype =
   identifier: ->
     this.scan(/^([0-9a-zA-Z-]+)/, 'identifier')
 
-  value: ->
-    this.scan(/^([^ ,;!}]+)/, 'value')
-
   string: ->
     this.scan(/^(\"[^\"]+\"|\'[^\']+\')/, 'string')
 
@@ -190,6 +187,9 @@ Lexer.prototype =
 
   url: ->
     this.scan(/^url\((.+)\)/, 'url')
+
+  unknown: ->
+    this.scan(/^([^ ,;!}]+)/, 'unknown')
 
   lookahead: (n) ->
     fetch = n - this.stash.length;
@@ -236,7 +236,7 @@ Lexer.prototype =
       this.string()     or
       this.important()  or
       this.semicolon()  or
-      this.value()      or
+      this.unknown()    or
       this.eos()
 
   defer: (tok) ->
