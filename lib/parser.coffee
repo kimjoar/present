@@ -35,12 +35,24 @@ Parser.prototype =
     this.sheet
 
   #
-  # selectors+ { declarations* }
+  # stylesheet
+  # - rule
+  #   - selectors
+  #   - declaration block
+  #     - declarations
+  #       - property
+  #       - value
   #
   parseRule: ->
-    switch this.peek().type
-      when "element" then this.parseElement()
+    rule = new nodes.Rule()
 
-  parseElement: ->
-    this.advance()
-    "element"
+    while '{' != this.peek().type && 'eos' != this.peek().type
+      switch this.peek().type
+        when 'element' then rule.push(this.advance())
+        when 'id' then rule.push(this.advance())
+        when 'class' then rule.push(this.advance())
+        when 'whitespace' then rule.push(this.advance())
+        when 'tab' then rule.push(this.advance())
+        else throw new Error("Unexpected type '#{this.peek().type}'")
+
+    rule

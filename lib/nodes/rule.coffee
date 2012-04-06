@@ -1,10 +1,11 @@
 Node = require('./node')
 
-class Stylesheet extends Node
+class Rule extends Node
   constructor: () ->
     this.nodes = []
 
   push: (node) ->
     this.nodes.push(node)
 
-module.exports = Stylesheet
+module.exports = Rule
+
