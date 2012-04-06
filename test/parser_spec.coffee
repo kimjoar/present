@@ -1,6 +1,8 @@
-Parser = require('../lib/parser')
-nodes = require('../lib/nodes')
+Present = require('../')
 should = require('should')
+
+Parser = Present.Parser
+nodes = Present.nodes
 
 describe "Parser", ->
   describe "expect", ->

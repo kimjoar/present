@@ -12,7 +12,7 @@ Parser.prototype =
     if this.lexer.peek().type == type
       this.lexer.advance();
     else
-      throw new Error("expected type '#{type}', got '#{this.lexer.peek().type}'")
+      throw new Error("Expected type '#{type}', got '#{this.lexer.peek().type}'")
 
   #
   # Parse input returning a string of js for evaluation.

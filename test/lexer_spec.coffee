@@ -1,5 +1,7 @@
-Lexer = require('../')
+Present = require('../')
 should = require('should')
+
+Lexer = Present.Lexer
 
 ensureToken = (opts) ->
   opts.func = opts.type unless opts.func

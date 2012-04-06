@@ -7,7 +7,7 @@ test:
 
 test-cov: build
 	@jscoverage lib lib-cov
-	@LEXER_COV=1 $(MAKE) test REPORTER=html-cov > test/coverage.html
+	@PRESENT_COV=1 $(MAKE) test REPORTER=html-cov > test/coverage.html
 	@rm -rf lib-cov
 	@rm -f $(JS)
 

@@ -1,8 +1,10 @@
-Lexer = require('../')
+Present = require('../')
 should = require('should')
 fs = require('fs')
 path = require('path')
 glob = require('glob')
+
+Lexer = Present.Lexer
 
 advanceTokens = (string, tokens) ->
   lexer = new Lexer(string)
