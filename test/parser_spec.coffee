@@ -25,14 +25,14 @@ describe "Parser", ->
     checkRule = (input, type) ->
       parser = new Parser(input)
       rule = parser.parseRule()
-      rule.nodes[0].type.should.equal(type)
+      rule.nodes[0].should.be.an.instanceof(type)
 
-    it "handles elements", -> checkRule "h1", "element"
-    it "handles ids", -> checkRule "#test", "id"
-    it "handles classes", -> checkRule ".test", "class"
+    it "handles elements", -> checkRule "h1", nodes.Selector
+    it "handles ids", -> checkRule "#test", nodes.Selector
+    it "handles classes", -> checkRule ".test", nodes.Selector
     it "handles whitespace", ->
-      checkRule " .class", "whitespace"
-      checkRule "\t.class", "tab"
+      checkRule " ", nodes.Whitespace
+      checkRule "\t", nodes.Whitespace
 
     it "throws an error if token is unexpected", ->
       parser = new Parser("property: value")
