@@ -8,19 +8,28 @@ Parser = module.exports = (str, filename, options) ->
   this.options = options
 
 Parser.prototype =
+  #
+  # Proxy to lexer
+  #
+  peek: -> this.lexer.peek()
+  advance: -> this.lexer.advance()
+
+  #
+  # Expect the given type, or throw an exception.
+  #
   expect: (type) ->
-    if this.lexer.peek().type == type
-      this.lexer.advance();
+    if this.peek().type == type
+      this.advance();
     else
-      throw new Error("Expected type '#{type}', got '#{this.lexer.peek().type}'")
+      throw new Error("Expected type '#{type}', got '#{this.peek().type}'")
 
   #
   # Parse input returning a string of js for evaluation.
   #
-  parse: () ->
+  parse: ->
     this.sheet = new nodes.Stylesheet()
 
-    while 'eos' != this.lexer.peek().type
+    while 'eos' != this.peek().type
       this.sheet.push(this.parseRule())
 
     this.sheet
@@ -28,10 +37,10 @@ Parser.prototype =
   #
   # selectors+ { declarations* }
   #
-  parseRule: () ->
-    switch this.lexer.peek().type
+  parseRule: ->
+    switch this.peek().type
       when "element" then this.parseElement()
 
-  parseElement: () ->
-    this.lexer.advance()
+  parseElement: ->
+    this.advance()
     "element"
