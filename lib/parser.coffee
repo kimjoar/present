@@ -13,6 +13,7 @@ Parser.prototype =
   #
   peek: -> this.lexer.peek()
   advance: -> this.lexer.advance()
+  lookahead: (n) -> this.lexer.lookahead(n)
 
   #
   # Expect the given `type`, or throw an exception.
@@ -36,15 +37,20 @@ Parser.prototype =
   parse: ->
     this.sheet = new nodes.Stylesheet()
 
-    charset = this.accept("atRule")
-    this.parseCharset() if charset?
+    this.parseCharset() if this.hasCharset()
 
     while 'eos' != this.peek().type
       this.sheet.push(this.parseRule())
 
     this.sheet
 
+  hasCharset: ->
+    this.peek().type == "atRule" &&
+      this.lookahead(2).type == "whitespace" &&
+      this.lookahead(3).type == "string"
+
   parseCharset: () ->
+    this.expect("atRule")
     this.expect("whitespace")
     charset = this.expect("string")
     this.sheet.push(new nodes.Charset(charset.val))
