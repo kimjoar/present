@@ -15,7 +15,7 @@ Parser.prototype =
   advance: -> this.lexer.advance()
 
   #
-  # Expect the given type, or throw an exception.
+  # Expect the given `type`, or throw an exception.
   #
   expect: (type) ->
     if this.peek().type == type
@@ -24,15 +24,31 @@ Parser.prototype =
       throw new Error("Expected type '#{type}', got '#{this.peek().type}'")
 
   #
+  # Accept the given `type`
+  #
+  accept: (type) ->
+    if this.peek().type == type
+      this.advance()
+
+  #
   # Parse input returning a string of js for evaluation.
   #
   parse: ->
     this.sheet = new nodes.Stylesheet()
 
+    charset = this.accept("atRule")
+    this.parseCharset() if charset?
+
     while 'eos' != this.peek().type
       this.sheet.push(this.parseRule())
 
     this.sheet
+
+  parseCharset: () ->
+    this.expect("whitespace")
+    charset = this.expect("string")
+    this.sheet.push(new nodes.Charset(charset.val))
+    this.accept(";")
 
   #
   # stylesheet

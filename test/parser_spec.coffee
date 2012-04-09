@@ -21,6 +21,12 @@ describe "Parser", ->
       sheet = parser.parse()
       sheet.should.be.an.instanceof(nodes.Stylesheet)
 
+    it "handles @charset", ->
+      parser = new Parser('@charset "UTF-8";')
+      sheet = parser.parse()
+      sheet.nodes[0].should.be.an.instanceof(nodes.Charset)
+      sheet.nodes[0].val.should.equal('"UTF-8"')
+
   describe "parseRule", ->
     checkRule = (input, type) ->
       parser = new Parser(input)
