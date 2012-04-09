@@ -36,9 +36,18 @@ describe "Parser", ->
     it "handles elements", -> checkRule "h1", nodes.Selector
     it "handles ids", -> checkRule "#test", nodes.Selector
     it "handles classes", -> checkRule ".test", nodes.Selector
-    it "handles whitespace", ->
-      checkRule " h1", nodes.Node
-      checkRule "\th1", nodes.Node
+
+    # it "does not allow only whitespace", ->
+    #   parser = new Parser(" ")
+    #   (() -> parser.parseRule()).should.throw(/empty selector/i)
+    #   parser = new Parser("\t")
+    #   (() -> parser.parseRule()).should.throw(/empty selector/i)
+
+    it "handles selector with several elements", ->
+      parser = new Parser("h1 h2")
+      rule = parser.parseRule()
+      rule.nodes.length.should.equal(1)
+      rule.nodes[0].nodes.length.should.equal(3)
 
     it "handles several selectors", ->
       parser = new Parser("h1,h2")

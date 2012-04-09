@@ -68,7 +68,7 @@ Parser.prototype =
         when 'element', 'id', 'class'
           selector.push(this.advance())
         when 'whitespace', 'tab'
-          rule.push(new nodes.Node(this.advance()))
+          selector.push(new nodes.Node(this.advance()))
         when ','
           rule.push(selector)
           rule.push(new nodes.Node(this.advance()))
