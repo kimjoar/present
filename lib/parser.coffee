@@ -37,17 +37,16 @@ Parser.prototype =
   parse: ->
     this.sheet = new nodes.Stylesheet()
 
-    this.parseCharset() if this.hasCharset()
-
     while 'eos' != this.peek().type
-      this.sheet.push(this.parseRule())
+      this.sheet.push(this.parseStylesheet())
 
     this.sheet
 
-  hasCharset: ->
-    this.peek().type == "charset" &&
-      this.lookahead(2).type == "whitespace" &&
-      this.lookahead(3).type == "string"
+  parseStylesheet: ->
+    switch this.peek().type
+      when 'charset' then this.parseCharset()
+      when 'element', 'id', 'class' then this.parseRule()
+      else throw new Error("Unexpected type '#{this.peek().type}'")
 
   parseCharset: () ->
     this.expect("charset")
