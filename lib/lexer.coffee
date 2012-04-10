@@ -59,7 +59,10 @@ Lexer.prototype =
   # at-rules
   #
   atRule: ->
-    this.scan(/^(@[a-zA-Z-]+)/, 'atRule')
+    this.scan(/^@charset/,   "charset")  or
+    this.scan(/^@import/,    "import")   or
+    this.scan(/^@font-face/, "fontFace") or
+    this.scan(/^@media/,     "media")
 
   #
   # pseudo classes and elements

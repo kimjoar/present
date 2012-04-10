@@ -45,12 +45,12 @@ Parser.prototype =
     this.sheet
 
   hasCharset: ->
-    this.peek().type == "atRule" &&
+    this.peek().type == "charset" &&
       this.lookahead(2).type == "whitespace" &&
       this.lookahead(3).type == "string"
 
   parseCharset: () ->
-    this.expect("atRule")
+    this.expect("charset")
     this.expect("whitespace")
     charset = this.expect("string")
     this.sheet.push(new nodes.Charset(charset.val))

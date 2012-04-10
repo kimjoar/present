@@ -290,13 +290,16 @@ describe "Lexer", ->
 
       ensureTokenType 'comment', comment
 
-  describe "at-rule", ->
-    ensureAtRuleToken = (name) ->
-      ensureTokenType "atRule", "@#{name}"
+  describe "at-rules", ->
+    ensureAtRuleToken = (name, input) ->
+      ensureToken
+        input: "@#{input || name}"
+        type: name
+        func: "atRule"
 
     it "handles @import",    -> ensureAtRuleToken "import"
     it "handles @charset",   -> ensureAtRuleToken "charset"
-    it "handles @font-face", -> ensureAtRuleToken "font-face"
+    it "handles @font-face", -> ensureAtRuleToken "fontFace", "font-face"
     it "handles @media",     -> ensureAtRuleToken "media"
 
   describe "whitespace", ->
@@ -409,7 +412,7 @@ describe "Lexer", ->
 
     it 'should handle at-rules', ->
       advanceTokens '@charset "utf-8"',
-        ["atRule"
+        ["charset"
          "whitespace"
          "string"
          "eos"]
