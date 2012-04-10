@@ -43,7 +43,7 @@ describe "Parser", ->
     #   parser = new Parser("\t")
     #   (() -> parser.parseRule()).should.throw(/empty selector/i)
 
-    it "handles selector with several elements", ->
+    it "handles selector with several simple selectors", ->
       parser = new Parser("h1 h2")
       rule = parser.parseRule()
       rule.nodes.length.should.equal(1)

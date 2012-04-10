@@ -31,9 +31,6 @@ Parser.prototype =
     if this.peek().type == type
       this.advance()
 
-  #
-  # Parse input returning a string of js for evaluation.
-  #
   parse: ->
     this.sheet = new nodes.Stylesheet()
 
@@ -55,15 +52,6 @@ Parser.prototype =
     this.sheet.push(new nodes.Charset(charset.val))
     this.accept(";")
 
-  #
-  # stylesheet
-  # - rule
-  #   - selectors
-  #   - declaration block
-  #     - declarations
-  #       - property
-  #       - value
-  #
   parseRule: ->
     rule = new nodes.Rule()
     selector = new nodes.Selector()
