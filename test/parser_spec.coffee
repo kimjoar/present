@@ -32,14 +32,17 @@ describe "Parser", ->
       sheet.nodes[0].val.should.equal('"UTF-8"')
 
   describe "parseRule", ->
-    checkRule = (input, type) ->
+    ensureSelector = (input) ->
       parser = new Parser(input)
       rule = parser.parseRule()
-      rule.nodes[0].should.be.an.instanceof(type)
+      isSelector(rule.nodes[0])
 
-    it "handles elements", -> checkRule "h1", nodes.Selector
-    it "handles ids", -> checkRule "#test", nodes.Selector
-    it "handles classes", -> checkRule ".test", nodes.Selector
+    isSelector = (node) ->
+      node.should.be.an.instanceof(nodes.Selector)
+
+    it "handles elements", -> ensureSelector "h1"
+    it "handles ids", -> ensureSelector "#test"
+    it "handles classes", -> ensureSelector ".test"
 
     it "does not allow only whitespace", ->
       parser = new Parser(" ")
@@ -58,8 +61,8 @@ describe "Parser", ->
       rule = parser.parseRule()
       ruleNodes = rule.nodes
       ruleNodes.length.should.equal(3)
-      ruleNodes[0].should.be.an.instanceof(nodes.Selector)
-      ruleNodes[2].should.be.an.instanceof(nodes.Selector)
+      isSelector(ruleNodes[0])
+      isSelector(ruleNodes[2])
 
     it "throws an error if token is unexpected", ->
       parser = new Parser("property: value")
