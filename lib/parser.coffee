@@ -13,7 +13,6 @@ Parser.prototype =
   #
   peek: -> @lexer.peek()
   advance: -> @lexer.advance()
-  lookahead: (n) -> @lexer.lookahead(n)
 
   #
   # Expect the given `type`, or throw an exception.
