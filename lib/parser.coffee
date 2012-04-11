@@ -30,6 +30,13 @@ Parser.prototype =
     if @peek().type == type
       @advance()
 
+  expectAny: (types...) ->
+    for type in types
+      node = @accept(type)
+      return node if node
+
+    throw new Error "Expected any of: #{types.join(', ')}"
+
   parse: ->
     sheet = new nodes.Stylesheet()
 
@@ -39,7 +46,7 @@ Parser.prototype =
     sheet
 
   whitespace: ->
-    node = @accept('whitespace') or @accept('tab') or @accept('newline')
+    @expectAny('whitespace', 'tab', 'newline')
     new nodes.Node()
 
   catchAll: ->

@@ -26,6 +26,16 @@ describe "Parser", ->
       token = parser.accept("class")
       should.not.exist(token)
 
+  describe "expectAny", ->
+    it "advances when type matches any of the tokens", ->
+      parser = new Parser(".test")
+      token = parser.expectAny("element", "class")
+      token.should.have.property('type', 'class')
+
+    it "throws an error if type does not match any token", ->
+      parser = new Parser("h1 #test")
+      (() -> parser.expectAny("class")).should.throw(/expected any of/i)
+
   describe "parse", ->
     it "returns a stylesheet", ->
       parser = new Parser("h1")
