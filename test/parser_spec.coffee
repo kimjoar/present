@@ -21,6 +21,10 @@ describe "Parser", ->
       sheet = parser.parse()
       sheet.should.be.an.instanceof(nodes.Stylesheet)
 
+    it "handles unexpected types", ->
+      parser = new Parser("property: value")
+      (() -> parser.parse()).should.throw(/Unexpected type/i)
+
     it "handles @charset", ->
       parser = new Parser('@charset "UTF-8";')
       sheet = parser.parse()
