@@ -39,11 +39,8 @@ Parser.prototype =
     sheet
 
   whitespace: ->
-    node = @accept('whitespace') or @accept('tab')
-    if node
-      new nodes.Node()
-    else
-      throw new Error("Expected whitespace")
+    node = @accept('whitespace') or @accept('tab') or @accept('newline')
+    new nodes.Node()
 
   catchAll: ->
     @advance()
@@ -53,7 +50,7 @@ Parser.prototype =
     switch @peek().type
       when 'charset' then @parseCharset()
       when 'element', 'id', 'class' then @parseRule()
-      when 'whitespace', 'tab' then @whitespace()
+      when 'whitespace', 'tab', 'newline' then @whitespace()
       else throw new Error("Unexpected type '#{@peek().type}'")
 
   parseCharset: () ->

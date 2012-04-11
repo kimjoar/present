@@ -37,8 +37,8 @@ describe "Parser", ->
       (() -> parser.parse()).should.throw(/unexpected type/i)
 
     it "adds whitespace as its own node", ->
-      parser = new Parser(" \t")
-      parser.parse().nodes.length.should.equal(2)
+      parser = new Parser(" \t\n")
+      parser.parse().nodes.length.should.equal(3)
 
     describe "at rules", ->
       it "handles @charset", ->
