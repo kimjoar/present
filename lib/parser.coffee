@@ -32,12 +32,12 @@ Parser.prototype =
       this.advance()
 
   parse: ->
-    this.sheet = new nodes.Stylesheet()
+    sheet = new nodes.Stylesheet()
 
     while 'eos' != this.peek().type
-      this.sheet.push(this.parseStylesheet())
+      sheet.push(this.parseStylesheet())
 
-    this.sheet
+    sheet
 
   parseStylesheet: ->
     switch this.peek().type
@@ -49,27 +49,36 @@ Parser.prototype =
     this.expect("charset")
     this.expect("whitespace")
     charset = this.expect("string")
-    this.sheet.push(new nodes.Charset(charset.val))
     this.accept(";")
+    new nodes.Charset(charset.val)
 
   parseRule: ->
     rule = new nodes.Rule()
-    selector = new nodes.Selector()
 
     while '{' != this.peek().type && 'eos' != this.peek().type
       switch this.peek().type
         when 'element', 'id', 'class'
-          selector.push(this.advance())
+          rule.push(this.parseSelector())
         when 'whitespace', 'tab'
-          selector.push(new nodes.Node(this.advance()))
+          rule.push(this.tokenNode())
         when ','
-          rule.push(selector)
-          rule.push(new nodes.Node(this.advance()))
-          selector = new nodes.Selector()
+          rule.push(this.tokenNode())
         else throw new Error("Unexpected type '#{this.peek().type}'")
 
-    if selector.nodes.length == 0
-      throw new Error("empty selector")
-
-    rule.push(selector)
     rule
+
+  tokenNode: ->
+    new nodes.Node(this.advance())
+
+  parseSelector: ->
+    selector = new nodes.Selector()
+
+    while '{' != this.peek().type && ',' != this.peek().type && 'eos' != this.peek().type
+      switch this.peek().type
+        when 'element', 'id', 'class'
+          selector.push(this.advance())
+        when 'whitespace', 'tab'
+          selector.push(this.tokenNode())
+        else throw new Error("Unexpected type '#{this.peek().type}'")
+
+    selector
