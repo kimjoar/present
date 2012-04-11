@@ -39,7 +39,15 @@ Parser.prototype =
     sheet
 
   whitespace: ->
-    new nodes.Node(this.accept('whitespace') or this.accept('tab'))
+    node = @accept('whitespace') or @accept('tab')
+    if node
+      new nodes.Node()
+    else
+      throw new Error("Expected whitespace")
+
+  catchAll: ->
+    @advance()
+    new nodes.Node()
 
   parseStylesheet: ->
     switch @peek().type
@@ -65,9 +73,9 @@ Parser.prototype =
           rule.push(@parseSelector())
           hasSelector = true
         when 'whitespace', 'tab'
-          rule.push(@tokenNode())
+          rule.push(@whitespace())
         when ','
-          rule.push(@tokenNode())
+          rule.push(@catchAll())
           hasSelector = false
         else throw new Error("Unexpected type '#{@peek().type}'")
 
@@ -75,9 +83,6 @@ Parser.prototype =
       throw new Error("Empty selector")
 
     rule
-
-  tokenNode: ->
-    new nodes.Node(@advance())
 
   parseSelector: ->
     selector = new nodes.Selector()
@@ -87,7 +92,7 @@ Parser.prototype =
         when 'element', 'id', 'class'
           selector.push(@advance())
         when 'whitespace', 'tab'
-          selector.push(@tokenNode())
+          selector.push(@whitespace())
         else throw new Error("Unexpected type '#{@peek().type}'")
 
     selector
