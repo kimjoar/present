@@ -33,8 +33,8 @@ describe "Parser", ->
       sheet.should.be.an.instanceof(nodes.Stylesheet)
 
     it "throws error on unexpected types", ->
-      parser = new Parser("property: value")
-      (() -> parser.parse()).should.throw(/Unexpected type/i)
+      parser = new Parser("@test")
+      (() -> parser.parse()).should.throw(/unexpected type/i)
 
     it "adds whitespace as its own node", ->
       parser = new Parser(" \t")
@@ -52,6 +52,10 @@ describe "Parser", ->
         parser = new Parser("h1, h2")
         rules = parser.parse().nodes[0].nodes
         rules.length.should.equal(4)
+
+    it "throws error on unexpected types", ->
+      parser = new Parser("h1,@test")
+      (() -> parser.parse()).should.throw(/unexpected type/i)
 
     describe "selectors", ->
       ensureSelector = (input) ->
@@ -88,5 +92,5 @@ describe "Parser", ->
         (() -> parser.parse()).should.throw(/empty selector/i)
 
       it "throws an error if unexpected type", ->
-        parser = new Parser("h1 property:value")
+        parser = new Parser("h1 @test")
         (() -> parser.parse()).should.throw(/unexpected type/i)
