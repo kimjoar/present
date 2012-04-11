@@ -37,11 +37,11 @@ describe "Parser", ->
     it "handles ids", -> checkRule "#test", nodes.Selector
     it "handles classes", -> checkRule ".test", nodes.Selector
 
-    # it "does not allow only whitespace", ->
-    #   parser = new Parser(" ")
-    #   (() -> parser.parseRule()).should.throw(/empty selector/i)
-    #   parser = new Parser("\t")
-    #   (() -> parser.parseRule()).should.throw(/empty selector/i)
+    it "does not allow only whitespace", ->
+      parser = new Parser(" ")
+      (() -> parser.parseRule()).should.throw(/empty selector/i)
+      parser = new Parser("\t")
+      (() -> parser.parseRule()).should.throw(/empty selector/i)
 
     it "handles selector with several simple selectors", ->
       parser = new Parser("h1 h2")
@@ -61,8 +61,6 @@ describe "Parser", ->
       parser = new Parser("property: value")
       (() -> parser.parseRule()).should.throw(/unexpected type/i)
 
-    # it "does not allow empty selector", ->
-    #   parser = new Parser("h1,")
-    #   (() -> parser.parseRule()).should.throw(/empty selector/i)
-
-
+    it "does not allow empty selector", ->
+      parser = new Parser("h1,")
+      (() -> parser.parseRule()).should.throw(/empty selector/i)

@@ -54,16 +54,22 @@ Parser.prototype =
 
   parseRule: ->
     rule = new nodes.Rule()
+    hasSelector = false
 
     while '{' != @peek().type && 'eos' != @peek().type
       switch @peek().type
         when 'element', 'id', 'class'
           rule.push(@parseSelector())
+          hasSelector = true
         when 'whitespace', 'tab'
           rule.push(@tokenNode())
         when ','
           rule.push(@tokenNode())
+          hasSelector = false
         else throw new Error("Unexpected type '#{@peek().type}'")
+
+    unless hasSelector
+      throw new Error("Empty selector")
 
     rule
 
