@@ -47,6 +47,12 @@ describe "Parser", ->
         sheet.nodes[0].should.be.an.instanceof(nodes.Charset)
         sheet.nodes[0].val.should.equal('"UTF-8"')
 
+    describe "rules", ->
+      it "handles whitespace", ->
+        parser = new Parser("h1, h2")
+        rules = parser.parse().nodes[0].nodes
+        rules.length.should.equal(4)
+
     describe "selectors", ->
       ensureSelector = (input) ->
         parser = new Parser(input)
