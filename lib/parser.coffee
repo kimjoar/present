@@ -39,10 +39,14 @@ Parser.prototype =
 
     sheet
 
+  whitespace: ->
+    new nodes.Node(this.accept('whitespace') or this.accept('tab'))
+
   parseStylesheet: ->
     switch @peek().type
       when 'charset' then @parseCharset()
-      when 'element', 'id', 'class', 'whitespace', 'tab' then @parseRule()
+      when 'element', 'id', 'class' then @parseRule()
+      when 'whitespace', 'tab' then @whitespace()
       else throw new Error("Unexpected type '#{@peek().type}'")
 
   parseCharset: () ->

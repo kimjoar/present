@@ -32,9 +32,13 @@ describe "Parser", ->
       sheet = parser.parse()
       sheet.should.be.an.instanceof(nodes.Stylesheet)
 
-    it "handles unexpected types", ->
+    it "throws error on unexpected types", ->
       parser = new Parser("property: value")
       (() -> parser.parse()).should.throw(/Unexpected type/i)
+
+    it "adds whitespace as its own node", ->
+      parser = new Parser(" \t")
+      parser.parse().nodes.length.should.equal(2)
 
     describe "at rules", ->
       it "handles @charset", ->
@@ -56,12 +60,6 @@ describe "Parser", ->
       it "handles elements", -> ensureSelector "h1"
       it "handles ids", -> ensureSelector "#test"
       it "handles classes", -> ensureSelector ".test"
-
-      it "does not allow only whitespace", ->
-        parser = new Parser(" ")
-        (() -> parser.parse()).should.throw(/empty selector/i)
-        parser = new Parser("\t")
-        (() -> parser.parse()).should.throw(/empty selector/i)
 
       it "handles selector with several simple selectors", ->
         parser = new Parser("h1 h2")
