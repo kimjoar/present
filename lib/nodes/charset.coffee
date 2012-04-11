@@ -1,8 +1,7 @@
 Node = require('./node')
 
 class Charset extends Node
-  constructor: (val) ->
-    this.val = val
+  constructor: (@val) ->
 
 module.exports = Charset
 

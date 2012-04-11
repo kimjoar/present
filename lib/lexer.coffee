@@ -1,11 +1,11 @@
 Lexer = module.exports = (str, options) ->
   options || (options = {})
-  this.input = str.replace(/\r\n|\r/g, '\n')
-  this.lineno = 1
-  this.deferredTokens = []
-  this.inBraces = false
-  this.inBrackets = false
-  this.stash = []
+  @input = str.replace(/\r\n|\r/g, '\n')
+  @lineno = 1
+  @deferredTokens = []
+  @inBraces = false
+  @inBrackets = false
+  @stash = []
   this
 
 Lexer.prototype =
@@ -15,7 +15,7 @@ Lexer.prototype =
   token: (type, val) ->
     {
       type: type
-      line: this.lineno
+      line: @lineno
       val: val
     }
 
@@ -23,140 +23,140 @@ Lexer.prototype =
   # Consume the given `len` of input, i.e. we are finished with it.
   #
   consume: (len) ->
-    this.input = this.input.substr(len)
+    @input = @input.substr(len)
 
   #
   # Scan for `type` with the given `regexp`.
   #
   scan: (regexp, type) ->
-    if captures = regexp.exec(this.input)
+    if captures = regexp.exec(@input)
       # When we find a match, we consume it and create a token
-      this.consume(captures[0].length)
-      this.token(type, captures[1])
+      @consume(captures[0].length)
+      @token(type, captures[1])
 
   #
   # end-of-source
   #
   eos: ->
-    return if this.input.length
-    this.token('eos')
+    return if @input.length
+    @token('eos')
 
   #
   # element selector
   #
   element: ->
-    return if this.inBraces or this.inBrackets
-    this.scan(/^(\w+)/, 'element')
+    return if @inBraces or @inBrackets
+    @scan(/^(\w+)/, 'element')
 
   #
   # universal selector
   #
   universal: ->
-    return if this.inBraces or this.inBrackets
-    this.scan(/^\*/, 'universal')
+    return if @inBraces or @inBrackets
+    @scan(/^\*/, 'universal')
 
   #
   # at-rules
   #
   atRule: ->
-    this.scan(/^@charset/,   "charset")  or
-    this.scan(/^@import/,    "import")   or
-    this.scan(/^@font-face/, "fontFace") or
-    this.scan(/^@media/,     "media")
+    @scan(/^@charset/,   "charset")  or
+    @scan(/^@import/,    "import")   or
+    @scan(/^@font-face/, "fontFace") or
+    @scan(/^@media/,     "media")
 
   #
   # pseudo classes and elements
   #
   pseudo: ->
-    this.scan(/^(::?[\w-]+)/, 'pseudo')
+    @scan(/^(::?[\w-]+)/, 'pseudo')
 
   #
   # braces
   #
   braces: ->
-    if captures = /^{/.exec(this.input)
-      this.inBraces = true
-      this.consume(captures[0].length)
-      this.token('{', captures[1])
-    else if captures = /^}/.exec(this.input)
-      this.inBraces = false
-      this.consume(captures[0].length)
-      this.token('}', captures[1])
+    if captures = /^{/.exec(@input)
+      @inBraces = true
+      @consume(captures[0].length)
+      @token('{', captures[1])
+    else if captures = /^}/.exec(@input)
+      @inBraces = false
+      @consume(captures[0].length)
+      @token('}', captures[1])
 
   #
   # brackets
   #
   bracket: ->
-    if captures = /^\[/.exec(this.input)
-      this.inBrackets = true
-      this.consume(captures[0].length)
-      this.token('[', captures[1])
-    else if captures = /^\]/.exec(this.input)
-      this.inBrackets = false
-      this.consume(captures[0].length)
-      this.token(']', captures[1])
+    if captures = /^\[/.exec(@input)
+      @inBrackets = true
+      @consume(captures[0].length)
+      @token('[', captures[1])
+    else if captures = /^\]/.exec(@input)
+      @inBrackets = false
+      @consume(captures[0].length)
+      @token(']', captures[1])
 
   #
   # id selector
   #
   id: ->
-    return if this.inBraces
-    this.scan(/^#([\w-]+)/, 'id')
+    return if @inBraces
+    @scan(/^#([\w-]+)/, 'id')
 
   #
   # class selector
   #
   className: ->
-    return if this.inBraces
-    this.scan(/^\.([\w-]+)/, 'class')
+    return if @inBraces
+    @scan(/^\.([\w-]+)/, 'class')
 
   #
   # property
   #
   property: ->
-    if captures = /^([\w-]+):/.exec(this.input)
-      this.consume(captures[0].length)
-      this.defer(this.token(':'))
-      this.token('property', captures[1])
+    if captures = /^([\w-]+):/.exec(@input)
+      @consume(captures[0].length)
+      @defer(@token(':'))
+      @token('property', captures[1])
 
   equal: ->
-    this.scan(/^=/, "=")
+    @scan(/^=/, "=")
 
   includes: ->
-    this.scan(/^~=/, "~=")
+    @scan(/^~=/, "~=")
 
   dashmatch: ->
-    this.scan(/^\|=/, "|=")
+    @scan(/^\|=/, "|=")
 
   colon: ->
-    this.scan(/^:/, ":")
+    @scan(/^:/, ":")
 
   semicolon: ->
-    this.scan(/^;/, ";")
+    @scan(/^;/, ";")
 
   comma: ->
-    this.scan(/^,/, ",")
+    @scan(/^,/, ",")
 
   percent: ->
-    this.scan(/^%/, "%")
+    @scan(/^%/, "%")
 
   adjacentSibling: ->
-    this.scan(/^\+/, "+")
+    @scan(/^\+/, "+")
 
   generalSibling: ->
-    this.scan(/^~/, "~")
+    @scan(/^~/, "~")
 
   child: ->
-    this.scan(/^>/, ">")
+    @scan(/^>/, ">")
 
   identifier: ->
-    this.scan(/^([0-9a-zA-Z-]+)/, 'identifier')
+    @scan(/^([0-9a-zA-Z-]+)/, 'identifier')
 
   string: ->
-    this.scan(/^(\"[^\"]+\"|\'[^\']+\')/, 'string')
+    @scan(/^(\"[^\"]+\"|\'[^\']+\')/, 'string')
 
   number: ->
-    this.scan(/^(-?[0-9\.]+)/, 'number')
+    @scan(/^(-?[0-9\.]+)/, 'number')
 
   color: ->
     colors =
@@ -167,83 +167,83 @@ Lexer.prototype =
       hsla: /^(rgba\([0-9]+%?, *[0-9]+%?, *[0-9]+%?, *[0-9.]+\))/
 
     for name, regex of colors
-      if captures = regex.exec(this.input)
-        this.consume(captures[0].length)
-        return this.token('color', captures[1])
+      if captures = regex.exec(@input)
+        @consume(captures[0].length)
+        return @token('color', captures[1])
 
   important: ->
-    this.scan(/^!important/, 'important');
+    @scan(/^!important/, 'important');
 
   whitespace: ->
-    this.scan(/^([ ]+)/, 'whitespace')
+    @scan(/^([ ]+)/, 'whitespace')
 
   tab: ->
-    this.scan(/^(\t+)/, 'tab')
+    @scan(/^(\t+)/, 'tab')
 
   comment: ->
-    this.scan(/^(\/\*(?:\s|\S)+?\*\/)/, 'comment')
+    @scan(/^(\/\*(?:\s|\S)+?\*\/)/, 'comment')
 
   newline: ->
-    if newline = this.scan(/^\n/, 'newline')
-      this.lineno += 1
+    if newline = @scan(/^\n/, 'newline')
+      @lineno += 1
       newline
 
   url: ->
-    this.scan(/^url\((.+)\)/, 'url')
+    @scan(/^url\((.+)\)/, 'url')
 
   unknown: ->
-    this.scan(/^([^ ,;!}]+)/, 'unknown')
+    @scan(/^([^ ,;!}]+)/, 'unknown')
 
   lookahead: (n) ->
-    fetch = n - this.stash.length;
-    this.stash.push(this.next()) while fetch-- > 0
-    this.stash[n - 1]
+    fetch = n - @stash.length;
+    @stash.push(@next()) while fetch-- > 0
+    @stash[n - 1]
 
   peek: ->
-    this.lookahead(1)
+    @lookahead(1)
 
   stashed: ->
-    this.stash.length && this.stash.shift()
+    @stash.length && @stash.shift()
 
   advance: ->
-    this.stashed() || this.next()
+    @stashed() || @next()
 
   next: ->
-    this.deferred()     or
-      this.comment()    or
-      this.pseudo()     or
-      this.id()         or
-      this.atRule()     or
-      this.whitespace() or
-      this.tab()        or
-      this.newline()    or
-      this.braces()     or
-      this.bracket()    or
-      this.equal()      or
-      this.includes()   or
-      this.dashmatch()  or
-      this.adjacentSibling() or
-      this.generalSibling() or
-      this.child()      or
-      this.universal()  or
-      this.element()    or
-      this.className()  or
-      this.property()   or
-      this.colon()      or
-      this.comma()      or
-      this.percent()    or
-      this.color()      or
-      this.number()     or
-      this.url()        or
-      this.identifier() or
-      this.string()     or
-      this.important()  or
-      this.semicolon()  or
-      this.unknown()    or
-      this.eos()
+    @deferred()     or
+      @comment()    or
+      @pseudo()     or
+      @id()         or
+      @atRule()     or
+      @whitespace() or
+      @tab()        or
+      @newline()    or
+      @braces()     or
+      @bracket()    or
+      @equal()      or
+      @includes()   or
+      @dashmatch()  or
+      @adjacentSibling() or
+      @generalSibling() or
+      @child()      or
+      @universal()  or
+      @element()    or
+      @className()  or
+      @property()   or
+      @colon()      or
+      @comma()      or
+      @percent()    or
+      @color()      or
+      @number()     or
+      @url()        or
+      @identifier() or
+      @string()     or
+      @important()  or
+      @semicolon()  or
+      @unknown()    or
+      @eos()
 
   defer: (tok) ->
-    this.deferredTokens.push(tok)
+    @deferredTokens.push(tok)
 
   deferred: ->
-    this.deferredTokens.length && this.deferredTokens.shift()
+    @deferredTokens.length && @deferredTokens.shift()

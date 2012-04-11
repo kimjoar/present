@@ -2,10 +2,10 @@ Node = require('./node')
 
 class Rule extends Node
   constructor: () ->
-    this.nodes = []
+    @nodes = []
 
   push: (node) ->
-    this.nodes.push(node)
+    @nodes.push(node)
 
 module.exports = Rule
 

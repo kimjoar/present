@@ -2,83 +2,83 @@ Lexer = require('./lexer')
 nodes = require('./nodes')
 
 Parser = module.exports = (str, filename, options) ->
-  this.input = str
-  this.lexer = new Lexer(str, options)
-  this.filename = filename
-  this.options = options
+  @input = str
+  @lexer = new Lexer(str, options)
+  @filename = filename
+  @options = options
 
 Parser.prototype =
   #
   # Proxy to lexer
   #
-  peek: -> this.lexer.peek()
-  advance: -> this.lexer.advance()
-  lookahead: (n) -> this.lexer.lookahead(n)
+  peek: -> @lexer.peek()
+  advance: -> @lexer.advance()
+  lookahead: (n) -> @lexer.lookahead(n)
 
   #
   # Expect the given `type`, or throw an exception.
   #
   expect: (type) ->
-    if this.peek().type == type
-      this.advance();
+    if @peek().type == type
+      @advance();
     else
-      throw new Error("Expected type '#{type}', got '#{this.peek().type}'")
+      throw new Error("Expected type '#{type}', got '#{@peek().type}'")
 
   #
   # Accept the given `type`
   #
   accept: (type) ->
-    if this.peek().type == type
-      this.advance()
+    if @peek().type == type
+      @advance()
 
   parse: ->
     sheet = new nodes.Stylesheet()
 
-    while 'eos' != this.peek().type
-      sheet.push(this.parseStylesheet())
+    while 'eos' != @peek().type
+      sheet.push(@parseStylesheet())
 
     sheet
 
   parseStylesheet: ->
-    switch this.peek().type
-      when 'charset' then this.parseCharset()
-      when 'element', 'id', 'class' then this.parseRule()
-      else throw new Error("Unexpected type '#{this.peek().type}'")
+    switch @peek().type
+      when 'charset' then @parseCharset()
+      when 'element', 'id', 'class' then @parseRule()
+      else throw new Error("Unexpected type '#{@peek().type}'")
 
   parseCharset: () ->
-    this.expect("charset")
-    this.expect("whitespace")
-    charset = this.expect("string")
-    this.accept(";")
+    @expect("charset")
+    @expect("whitespace")
+    charset = @expect("string")
+    @accept(";")
     new nodes.Charset(charset.val)
 
   parseRule: ->
     rule = new nodes.Rule()
 
-    while '{' != this.peek().type && 'eos' != this.peek().type
-      switch this.peek().type
+    while '{' != @peek().type && 'eos' != @peek().type
+      switch @peek().type
         when 'element', 'id', 'class'
-          rule.push(this.parseSelector())
+          rule.push(@parseSelector())
         when 'whitespace', 'tab'
-          rule.push(this.tokenNode())
+          rule.push(@tokenNode())
         when ','
-          rule.push(this.tokenNode())
-        else throw new Error("Unexpected type '#{this.peek().type}'")
+          rule.push(@tokenNode())
+        else throw new Error("Unexpected type '#{@peek().type}'")
 
     rule
 
   tokenNode: ->
-    new nodes.Node(this.advance())
+    new nodes.Node(@advance())
 
   parseSelector: ->
     selector = new nodes.Selector()
 
-    while '{' != this.peek().type && ',' != this.peek().type && 'eos' != this.peek().type
-      switch this.peek().type
+    while '{' != @peek().type && ',' != @peek().type && 'eos' != @peek().type
+      switch @peek().type
         when 'element', 'id', 'class'
-          selector.push(this.advance())
+          selector.push(@advance())
         when 'whitespace', 'tab'
-          selector.push(this.tokenNode())
-        else throw new Error("Unexpected type '#{this.peek().type}'")
+          selector.push(@tokenNode())
+        else throw new Error("Unexpected type '#{@peek().type}'")
 
     selector

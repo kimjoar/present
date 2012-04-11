@@ -2,9 +2,9 @@ Node = require('./node')
 
 class Stylesheet extends Node
   constructor: () ->
-    this.nodes = []
+    @nodes = []
 
   push: (node) ->
-    this.nodes.push(node)
+    @nodes.push(node)
 
 module.exports = Stylesheet
