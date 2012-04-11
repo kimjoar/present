@@ -86,3 +86,7 @@ describe "Parser", ->
       it "does not allow empty selector", ->
         parser = new Parser("h1,")
         (() -> parser.parse()).should.throw(/empty selector/i)
+
+      it "throws an error if unexpected type", ->
+        parser = new Parser("h1 property:value")
+        (() -> parser.parse()).should.throw(/unexpected type/i)
