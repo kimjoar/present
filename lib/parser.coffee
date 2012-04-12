@@ -58,6 +58,7 @@ Parser.prototype =
       when 'charset' then @parseCharset()
       when 'element', 'id', 'class' then @parseRule()
       when 'whitespace', 'tab', 'newline' then @whitespace()
+      when '{' then @parseBlock()
       else throw new Error("Unexpected type '#{@peek().type}'")
 
   parseCharset: () ->
@@ -66,6 +67,11 @@ Parser.prototype =
     charset = @expect("string")
     @accept(";")
     new nodes.Charset(charset.val)
+
+  parseBlock: ->
+    @expect("{")
+    @expect("}")
+    new nodes.Block()
 
   parseRule: ->
     rule = new nodes.Rule()

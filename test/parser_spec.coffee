@@ -104,3 +104,9 @@ describe "Parser", ->
       it "throws an error if unexpected type", ->
         parser = new Parser("h1 @test")
         (() -> parser.parse()).should.throw(/unexpected type/i)
+
+    describe "declaration blocks", ->
+      it "handles empty declaration block", ->
+        parser = new Parser("h1{}")
+        nodes = parser.parse().nodes;
+        nodes.length.should.equal(2)
