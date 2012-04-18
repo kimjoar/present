@@ -18,9 +18,7 @@ Parser.prototype =
   # Expect the given `type`, or throw an exception.
   #
   expect: (type) ->
-    if @peek().type == type
-      @advance();
-    else
+    @accept(type) or
       throw new Error("Expected type '#{type}', got '#{@peek().type}'")
 
   #
